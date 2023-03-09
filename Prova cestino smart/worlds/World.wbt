@@ -1,0 +1,88 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023a/projects/objects/floors/protos/RectangleArena.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.11076865079543555 0.022356999028966196 0.9935947215013664 2.745784350998194
+  position 0.5133191232607948 -0.27145560860057505 0.1564902289489185
+}
+TexturedBackground {
+}
+Robot {
+  children [
+    DEF Body Transform {
+      translation 0 0 0.0415
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.5 0.5 1
+            roughness 1
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.08
+            radius 0.045
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0.045 0 0.025
+      }
+      device [
+        RotationalMotor {
+          name "motor_1"
+        }
+      ]
+      endPoint Solid {
+        translation 0.04500056354408376 8.497525208517895e-08 0.024992320932191583
+        rotation -2.471438440001888e-09 1 -2.6268473811296493e-09 1.5699999944589278
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 1 1 0.5
+              roughness 1
+              metalness 0
+            }
+            geometry DEF wheel Cylinder {
+              height 0.01
+              radius 0.025
+            }
+          }
+        ]
+        boundingObject Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0.5
+            roughness 1
+            metalness 0
+          }
+        }
+        physics Physics {
+        }
+      }
+    }
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 1 0.5
+        roughness 1
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.01
+        radius 0.025
+      }
+    }
+  ]
+  boundingObject USE Body
+  physics Physics {
+  }
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+}
