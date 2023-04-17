@@ -1,0 +1,10 @@
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\bin\Release\ChatServer.exe.config
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\bin\Release\ChatServer.exe
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\bin\Release\ChatServer.pdb
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Release\ChatServer.Properties.Resources.resources
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Release\ChatServer.Server.resources
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Release\ChatServer.csproj.GenerateResource.cache
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Release\ChatServer.csproj.CoreCompileInputs.cache
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Release\ChatServer.exe
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Release\ChatServer.pdb
+C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Release\ChatServer.csprojAssemblyReference.cache

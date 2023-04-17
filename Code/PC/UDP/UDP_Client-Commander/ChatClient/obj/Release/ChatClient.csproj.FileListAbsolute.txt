@@ -1,0 +1,10 @@
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\bin\Release\ChatClient.exe.config
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\bin\Release\ChatClient.exe
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\bin\Release\ChatClient.pdb
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\obj\Release\ChatClient.csprojAssemblyReference.cache
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\obj\Release\ChatClient.Client.resources
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\obj\Release\ChatClient.Properties.Resources.resources
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\obj\Release\ChatClient.csproj.GenerateResource.cache
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\obj\Release\ChatClient.csproj.CoreCompileInputs.cache
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\obj\Release\ChatClient.exe
+C:\Users\Utente\Documents\UDP\Commander-ChatClient\ChatClient\obj\Release\ChatClient.pdb
