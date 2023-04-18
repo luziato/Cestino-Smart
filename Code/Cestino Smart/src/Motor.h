@@ -7,7 +7,9 @@ class Motor
 {
 public:
 
-    Motor(int dir1, int dir2, int Enable);      //  Defining pin for the motror
+    Motor();      //  Defining pin for the motror
+
+    void begin(int dir1, int dir2, int Enable);
 
     void motor(int dir, int pwm);
     

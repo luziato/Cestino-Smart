@@ -1,8 +1,21 @@
 #include "Arduino.h"
 #include "Motor.h"
 
-Motor::Motor(int dir1, int dir2, int Enable) 
+Motor::Motor() 
 {
+    /* pinMode(dir1, OUTPUT);
+    pinMode(dir2, OUTPUT);
+    pinMode(Enable, OUTPUT);
+
+	_dir1 = dir1;
+    _dir2 = dir2;
+    _enable = Enable; */
+
+}
+
+void Motor::begin(int dir1, int dir2, int Enable)
+{
+
     pinMode(dir1, OUTPUT);
     pinMode(dir2, OUTPUT);
     pinMode(Enable, OUTPUT);
