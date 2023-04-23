@@ -1,80 +1,134 @@
-#include "Arduino.h"
-#include "define.h"
+// #include "Arduino.h"  //RDA: Non ricordo se è necessario inserirlo tutte le volte
 #include "Move.h"
-#include "Motor.h"
-#include "Motor.cpp"
 
-/* 
+Move::Move()
+{
+    _mNorth.begin(NORTH_DIR1, NORTH_DIR2, NORTH_ENABLE);
+    _mEast.begin(EAST_DIR1, EAST_DIR2, EAST_ENABLE);
+    _mSouth.begin(SOUTH_DIR1, SOUTH_DIR2, SOUTH_ENABLE);
+    _mWest.begin(WEST_DIR1, WEST_DIR2, WEST_ENABLE);
+}
 
-//  Motor definitions
-Motor::Motor motor motN(dir1N, dir2N, enableN);    //NORD motor
-Motor motE(dir1E, dir2E, enableE);    //EST motor
-Motor motS(dir1S, dir2S, enableS);    //SUD motor
-Motor motW(dir1W, dir2W, enableW);    //WEST motor 
+Move::~Move() {}
 
-*/
+void Move::Dir(int dir, int speed, int time, unsigned long now)
+{
 
-
-Motor motN;
-Motor motE;
-Motor motS;
-Motor motW;
-
-
-
-
-//90° Directions______________________________________________________
-
-void Move::NORD(int DIRECTION, int SPEED, int TIME)      //Sends robot to NORD for TIME at SPEED
+    if (time > 10000000) // TIME GUARD: Robot cannot (and has no need to) run a command for more than 10sec for safety
     {
-
-        Motor::motor.motN(1,SPEED);
-        //motE.motor(1,SPEED);
-        //motS.motor(1,SPEED);
-        // motor(1,SPEED);
-
-        
-        
-
-
-        //return(0);
-
+        time = 10000000;
     }
 
-void Move::EST(int DIR, int SPEED, int TIME)      //Sends robot to EST for TIME at SPEED
-    {
+    /*Setting time variable*/
+    _time.EndMicros = now + time;
 
+    switch (dir)
+    {
+    case North:
+        if (!_time.Running) // If running is true ther's no need to set the motors again
+        {
+            _mNorth.moving(0, speed);
+            _mEast.moving(2, speed);
+            _mSouth.moving(0, speed);
+            _mWest.moving(1, speed);
+            _time.Running = true;
+        }
+        break;
+
+    case NorthEast:
+        if (!_time.Running)
+        {
+            _mNorth.moving(1, speed);
+            _mEast.moving(2, speed);
+            _mSouth.moving(2, speed);
+            _mWest.moving(1, speed);
+            _time.Running = true;
+        }
+        break;
+
+    case East:
+        if (!_time.Running)
+        {
+            _mNorth.moving(1, speed);
+            _mEast.moving(0, speed);
+            _mSouth.moving(2, speed);
+            _mWest.moving(0, speed);
+            _time.Running = true;
+        }
+        break;
+
+    case SouthEast:
+        if (!_time.Running)
+        {
+            _mNorth.moving(1, speed);
+            _mEast.moving(1, speed);
+            _mSouth.moving(2, speed);
+            _mWest.moving(2, speed);
+            _time.Running = true;
+        }
+        break;
+
+    case South:
+        if (!_time.Running)
+        {
+            _mNorth.moving(0, speed);
+            _mEast.moving(1, speed);
+            _mSouth.moving(0, speed);
+            _mWest.moving(2, speed);
+            _time.Running = true;
+        }
+        break;
+
+    case SouthWest:
+        if (!_time.Running)
+        {
+            _mNorth.moving(2, speed);
+            _mEast.moving(1, speed);
+            _mSouth.moving(1, speed);
+            _mWest.moving(2, speed);
+            _time.Running = true;
+        }
+        break;
+
+    case West:
+        if (!_time.Running)
+        {
+            _mNorth.moving(2, speed);
+            _mEast.moving(0, speed);
+            _mSouth.moving(1, speed);
+            _mWest.moving(0, speed);
+            _time.Running = true;
+        }
+        break;
+
+    case NorthWest:
+        if (!_time.Running)
+        {
+            _mNorth.moving(2, speed);
+            _mEast.moving(2, speed);
+            _mSouth.moving(1, speed);
+            _mWest.moving(1, speed);
+            _time.Running = true;
+        }
+        break;
+
+    default:
+        _mNorth.moving(0, speed);
+        _mEast.moving(0, speed);
+        _mSouth.moving(0, speed);
+        _mWest.moving(0, speed);
+        _time.Running = false;
+
+        break;
     }
 
-void Move::SUD(int DIR, int SPEED, int TIME)      //Sends robot to SUD for TIME at SPEED
+    if (_time.EndMicros >= micros()) // checking if the motor need to stop (freeWheel)
     {
+        _time.Running = false;
 
+        _mNorth.moving(0, speed);
+        _mEast.moving(0, speed);
+        _mSouth.moving(0, speed);
+        _mWest.moving(0, speed);
     }
-
-void Move::WEST(int DIR, int SPEED, int TIME)      //Sends robot to WEST for TIME at SPEED
-    {
-
-    }
-
-//45° Directions______________________________________________________
-
-void Move::NE(int DIR, int SPEED, int TIME)      //Sends robot to NORD-EST for TIME at SPEED
-    {
-
-    }
-    
-void Move::SE(int DIR, int SPEED, int TIME)      //Sends robot to SUD-EST for TIME at SPEED
-    {
-
-    }
-
-void Move::SO(int DIR, int SPEED, int TIME)      //Sends robot to SUD-OVEST for TIME at SPEED
-    {
-
-    }
-
-void Move::NO(int DIR, int SPEED, int TIME)      //Sends robot to NORD-OVEST for TIME at SPEED  
-    {
-
-    }
-
+}

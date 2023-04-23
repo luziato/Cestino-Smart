@@ -1,17 +1,10 @@
 #include "Arduino.h"
 #include "Motor.h"
 
-Motor::Motor() 
-{
-    /* pinMode(dir1, OUTPUT);
-    pinMode(dir2, OUTPUT);
-    pinMode(Enable, OUTPUT);
+Motor::Motor(){}
 
-	_dir1 = dir1;
-    _dir2 = dir2;
-    _enable = Enable; */
-
-}
+Motor::~Motor()
+{}
 
 void Motor::begin(int dir1, int dir2, int Enable)
 {
@@ -26,7 +19,7 @@ void Motor::begin(int dir1, int dir2, int Enable)
 
 }
 
-void Motor::motor(int dir, int pwm)
+void Motor::moving(int dir, int pwm)
     {
         
 

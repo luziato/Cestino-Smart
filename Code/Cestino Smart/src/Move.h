@@ -1,31 +1,64 @@
 #ifndef Move_h
-#define Move_h
+#define Move_h      //Define guard
 
 #include "Arduino.h"
+#include "const.h"
+#include "Motor.h"
+
+#define N_MAX_DIR 4
+/* #define DIR_NORD 0
+#define DIR_SUD 1
+#define DIR_EST 2
+#define DIR_WEST 3      replaced enum        */
 
 class Move
 {
-public:
 
-    void move(               //  Defining: direction speed and time
-        int DIRECTION,        //  Direction of the robot
-        int SPEED,      //  Speed of the robot
-        int TIME        //  Timer to execute the command
-        );      
-
-    // 90° Directions
-    void NORD(int DIR, int SPEED, int TIME);       //Sends robot to NORD for TIME at SPEED
-    void EST(int DIR, int SPEED, int TIME);       //Sends robot to EST for TIME at SPEED
-    void SUD(int DIR, int SPEED, int TIME);       //Sends robot to SUD for TIME at SPEED
-    void WEST(int DIR, int SPEED, int TIME);       //Sends robot to WEST for TIME at SPEED
-    //45° Directions
-    void NE(int DIR, int SPEED, int TIME);       //Sends robot to NORD-EST for TIME at SPEED
-    void SE(int DIR, int SPEED, int TIME);       //Sends robot to SUD-EST for TIME at SPEED
-    void SO(int DIR, int SPEED, int TIME);       //Sends robot to SUD-OVEST for TIME at SPEED
-    void NO(int DIR, int SPEED, int TIME);       //Sends robot to NORD-OVEST for TIME at SPEED  
-    
 private:
+    Motor _mNorth;
+    Motor _mEast;
+    Motor _mSouth;
+    Motor _mWest;
 
+    // Timer variables
+    typedef struct
+    {
+        unsigned long EndMicros; // The calculated time at witch the motor should stop ( time + now[micros] )
+        bool Running = false;    // Do I need to run the code?
+    } _Time;
+
+    _Time _time;        // _time constructor
+
+    enum DIR        
+    {
+        North,
+        NorthEast,
+        East,
+        SouthEast,
+        South,
+        SouthWest,
+        West,
+        NorthWest
+    };
+
+public:
+    Move();
+    ~Move();
+
+    /**
+     * @brief Sends robot to North for TIME at SPEED
+     *
+     * @param dir Direction of the robot in 45° increment form 0
+     * @param speed Speed of the robot
+     * @param time Timer to execute the command
+     * @param now Time in witch the method is called
+     */
+    void Dir(int dir, int speed, int time, unsigned long now);
+
+    /**
+     * @brief Stops all motor
+     */
+    //void Stop();
 };
 
 #endif
