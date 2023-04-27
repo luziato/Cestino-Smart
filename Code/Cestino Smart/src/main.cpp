@@ -1,11 +1,6 @@
 #include <Arduino.h>
 
-//Self-Made
-#include "const.h"
-#include "Move.h"
-#include "UDPtoINT.h"
-
-
+#include "main.h"
 
 Move MoveTo;
 
