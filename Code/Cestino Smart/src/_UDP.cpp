@@ -1,11 +1,40 @@
+#include "Arduino.h"
 #include "_UDP.h"
+//********************************************
+#include "WiFiNINA.h" // Wifi library
+#include "WiFiUdp.h"  // UDP library
+#include "credentials.h" // The log-in credential for wifi connection
+
+/*********DEBUGGER************/
+#include "debug.h"
+/*****************************/
+
+///////please enter your sensitive data in the Secret tab/arduino_secrets.h
+char ssid[] = SECRET_SSID; // your network SSID (name)
+char pass[] = SECRET_PASS; // your network password (use for WPA, or use as key for WEP)
+
+int status = WL_IDLE_STATUS; // Status of WiFi connection
+
+WiFiSSLClient client; // Instantiate the Wifi client
+
+// UDP Variables
+unsigned int localPort = 30000;          // local port to listen on
+const char *computerIP = "192.168.1.50"; // ENTER YOUR COMPUTER'S IP BETWEEN QUOTES
+
+WiFiUDP Udp; // Instantiate UDP class
+
+unsigned char udpTXBuffer[255];
+unsigned char udpRXBuffer[255];
+
+
+//********************************************
 
 
 void UDPsetup()
 {
   if (WiFi.status() == WL_NO_MODULE) // Check for Wifi Module. If no module, don't continue
   {
-    Serial.println("No WIFI card found.");
+    deblnU("No WIFI card found.");
     while (true)
       ;
   }
@@ -13,12 +42,12 @@ void UDPsetup()
   // Connect to Wifi Access Point
   connectToAP();
 
-  // UDP Connect with report via serial
+  // UDP Connect
   Udp.begin(localPort);
 
   delay(1000 * 3);
   UDP_sendPaket(localPort, UDP_LOGIN, 0, 0);
-  Serial.println("Inviato Login");
+  deblnU("Inviato Login");
 }
 
 char *UDP_getData(uint8_t *pak)
@@ -56,9 +85,10 @@ void UDP_sendPaket(int sockport, uint8_t Identfier, uint8_t *pak, size_t msize)
   Udp.endPacket();
 }
 
-void UDPfunc()
+void UDPfunc(int *_dir, int *_speed, int *_time)
 {
   int packetSize = Udp.parsePacket();
+  
   if (packetSize)
   {
     // read the packet into packetBufffer
@@ -66,15 +96,20 @@ void UDPfunc()
     Udp.read(udpRXBuffer, 255);
     UDP_getData(udpRXBuffer);
 
-    Serial.print("-> ");
-    Serial.println((char *)UDP_getData(udpRXBuffer));
+    debU("-> ");
+    deblnU((char *)UDP_getData(udpRXBuffer));
+      parseData(_dir, _speed, _time);
+      //printData(true);
 
-    parseData();
-
-    printData(true);
-
-    memset(udpRXBuffer, 0, sizeof(udpRXBuffer)); // cleaning buffer
   }
+  else
+  {
+    memset(udpRXBuffer, 0, sizeof(udpRXBuffer)); // cleaning buffer
+    *_dir = 0;
+    *_speed = 0;
+    *_time = 0;
+  }
+
 }
 
 //
@@ -82,60 +117,60 @@ void UDPfunc()
 //
 
 // UDP to Int
-void parseData()
+void parseData(int *_dir, int *_speed, int *_time)
 { // split the data into its parts
 
   char *strtokIndx; // this is used by strtok() as an index
 
   // Converts direction
   strtokIndx = strtok((char *)UDP_getData(udpRXBuffer), ";"); // get the first part - the string
-  dir = atoi(strtokIndx); // convert this part to an integer
+  *(_dir) = atoi(strtokIndx); // convert this part to an integer
 
   // Converts speed
   strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
-  speed = atoi(strtokIndx);       // convert this part to an integer
+  *(_speed) = atoi(strtokIndx);       // convert this part to an integer
 
   // Converts time
   strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
-  time = atoi(strtokIndx);        // convert this part to an integer
+  *(_time) = atoi(strtokIndx);        // convert this part to an integer
 }
 
 // Print UDP paket
 void printUDP()
 {
   int packetSize = Udp.parsePacket();
-  Serial.println("Contents:");
+  deblnU("Contents:");
   for (int i = 0; i < packetSize; i++)
   {
 
     char buffFeed[10];
     sprintf(buffFeed, "%02x - %c ", udpRXBuffer[i], udpRXBuffer[i]);
-    Serial.println(buffFeed);
+    deblnU(buffFeed);
   }
-  Serial.println("");
+  deblnU("");
 }
 
 // Print extracted data, take bool: TRUE: extracted data +1; FALSE: just estracted data
 void printData(bool sum)
 {
-  if (sum == true)
+ /* if (sum == true)
   {
-    Serial.print(dir + 1);
-    Serial.print(" ; ");
-    Serial.print(speed + 1);
-    Serial.print(" ; ");
-    Serial.print(time + 1);
-    Serial.println(" .");
+    debU(dir + 1);
+    debU(" ; ");
+    debU(speed + 1);
+    debU(" ; ");
+    debU(time + 1);
+    deblnU(" .");
   }
   else
   {
-    Serial.print(dir);
-    Serial.print(" ; ");
-    Serial.print(speed);
-    Serial.print(" ; ");
-    Serial.print(time);
-    Serial.println(" .");
-  }
+    debU(dir);
+    debU(" ; ");
+    debU(speed);
+    debU(" ; ");
+    debU(time);
+    deblnU(" .");
+  }*/
 }
 
 // Connect to wifi network
@@ -145,7 +180,7 @@ void connectToAP()
   while (status != WL_CONNECTED)
   {
     status = WiFi.begin(ssid, pass);
-    Serial.println("Connecting WiFi...");
+    deblnU("Connecting WiFi...");
 
     // wait 1 second for connection:
     delay(1000);
@@ -159,12 +194,12 @@ void printWiFiData()
 {
   // print your board's IP address:
   IPAddress ip = WiFi.localIP();
-  Serial.print("IP address : ");
-  Serial.println(ip);
+  debU("IP address : ");
+  deblnU(ip);
 
-  Serial.print("Subnet mask: ");
-  Serial.println((IPAddress)WiFi.subnetMask());
+  debU("Subnet mask: ");
+  deblnU((IPAddress)WiFi.subnetMask());
 
-  Serial.print("Gateway IP : ");
-  Serial.println((IPAddress)WiFi.gatewayIP());
+  debU("Gateway IP : ");
+  deblnU((IPAddress)WiFi.gatewayIP());
 }

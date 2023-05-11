@@ -1,15 +1,11 @@
 #ifndef Move_h
-#define Move_h      //Define guard
+#define Move_h // Define guard
 
 #include "Arduino.h"
 #include "const.h"
 #include "Motor.h"
 
 #define N_MAX_DIR 4
-/* #define DIR_NORD 0
-#define DIR_SUD 1
-#define DIR_EST 2
-#define DIR_WEST 3      replaced enum        */
 
 class Move
 {
@@ -27,18 +23,22 @@ private:
         bool Running = false;    // Do I need to run the code?
     } _Time;
 
-    _Time _time;        // _time constructor
+    _Time _time; // _time constructor
 
-    enum DIR        
+    enum DIR
     {
-        North,
+        North = 1,
         NorthEast,
         East,
         SouthEast,
         South,
         SouthWest,
         West,
-        NorthWest
+        NorthWest,
+        STOP,
+        Square,
+        Hexagon,
+        Cross
     };
 
 public:
@@ -53,12 +53,10 @@ public:
      * @param time Timer to execute the command
      * @param now Time in witch the method is called
      */
-    void Dir(int dir, int speed, int time, unsigned long now);
+    void Dir(int dir, int speed, unsigned long time, unsigned long now);
 
-    /**
-     * @brief Stops all motor
-     */
-    //void Stop();
+    void KILL();
+    void Brake();
 };
 
 #endif
