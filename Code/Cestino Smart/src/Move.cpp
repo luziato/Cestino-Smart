@@ -37,6 +37,7 @@ void Move::Brake()
 
 void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 {
+    _dir = dir;
 
     debM1("Dir: ");
     debM1(dir);
@@ -48,17 +49,26 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     debM1(now);
     deblnM1(" .");
 
-    if (time > 10000000) // TIME GUARD: Robot cannot (and has no need to) run a command for more than 10sec for safety
+    _time.time = time;
+
+    if (_time.time > 5000000) // TIME GUARD: Robot cannot (and has no need to) run a command for more than 10sec for safety
     {
-        time = 10000000;
+        _time.time = 5000000;
     }
 
-    if (dir != 0)
+    if (_dir != 0)
     {
-        _time.Running = false;
+        _time.Running= false;
     }
+    
 
-    switch (dir)
+/*    _time.oldTime = _time.time;
+
+    _time.EndMicros = micros() + _time.time;
+    _time.time = 0;
+    deblnM(_time.EndMicros);
+*/
+    switch (_dir)
     {
     case North:
         if (!_time.Running) // If running is true ther's no need to set the motors again
@@ -82,6 +92,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
             _mWest.moving(1, speed);
             _time.EndMicros = now + time;
             _time.Running = true;
+            _dir = 0;
             deblnM("NorthEast");
         }
         break;
@@ -164,7 +175,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         }
         break;
 
-        case STOP:
+    case Freewheel:
         if (!_time.Running)
         {
             deblnM("stop mot");
@@ -324,17 +335,49 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         }
         break;
 
+    case CW:
+        _mNorth.moving(2, speed);
+        _mEast.moving(1, speed);
+        _mSouth.moving(2, speed);
+        _mWest.moving(1, speed);
+        deblnM("Rotating CW");
+        break;
+
+    case CCW:
+        _mNorth.moving(2, speed);
+        _mEast.moving(2, speed);
+        _mSouth.moving(2, speed);
+        _mWest.moving(2, speed);
+        deblnM("Rotating CcW");
+
+    case _Brake:
+
+        _mNorth.moving(3, 255);
+        _mEast.moving(3, 255);
+        _mSouth.moving(3, 255);
+        _mWest.moving(3, 255);
+        delay(speed / 3);
+        _mNorth.moving(0, 0);
+        _mEast.moving(0, 0);
+        _mSouth.moving(0, 0);
+        _mWest.moving(0, 0);
+        break;
+
     default:
         // deblnM(_time[nmot].Running); deblnM( _time[nmot].EndMicros < micros());
-        if (_time.Running && _time.EndMicros < micros()) // checking if the motor need to stop (freeWheel)
+        if (_time.Running)
         {
-            deblnM("stop mot");
-            _time.Running = false;
-            _mNorth.moving(0, 0);
-            _mEast.moving(0, 0);
-            _mSouth.moving(0, 0);
-            _mWest.moving(0, 0);
+            if (micros() > _time.EndMicros) // checking if the motor need to stop (freeWheel)
+            {
+                deblnM("stop mot");
+                _time.Running = false;
+                _mNorth.moving(0, 0);
+                _mEast.moving(0, 0);
+                _mSouth.moving(0, 0);
+                _mWest.moving(0, 0);
+            }
+            break;
+            _dir = 0; // Consume the variable so you don't re set the same command
         }
-        break;
     }
 }

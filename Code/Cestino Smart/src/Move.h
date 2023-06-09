@@ -21,9 +21,13 @@ private:
     {
         unsigned long EndMicros; // The calculated time at witch the motor should stop ( time + now[micros] )
         bool Running = false;    // Do I need to run the code?
+        unsigned long time;      // Needed to hold time form dir func 
+        unsigned long oldTime;
     } _Time;
 
     _Time _time; // _time constructor
+
+    int _dir;
 
     enum DIR
     {
@@ -35,10 +39,13 @@ private:
         SouthWest,
         West,
         NorthWest,
-        STOP,
+        Freewheel,
         Square,
         Hexagon,
-        Cross
+        Cross,
+        CW,
+        CCW,
+        _Brake
     };
 
 public:

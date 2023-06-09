@@ -9,11 +9,18 @@
 #include "Move.h"
 #include "_UDP.h"
 
+#include <JY901.h>
+
 Move MoveTo;
 
 int UDPdir;
 int UDPspeed;
 int UDPtime;
+
+
+double magX = 0;
+double magY = 0;
+double magZ = 0;
 
 void setup()
 {
@@ -24,6 +31,43 @@ void setup()
     debln("setup completed");
 
     // debln("TESTING...");
+
+    JY901.StartIIC();
+    JY901.GetMag();
+    magX = JY901.stcMag.h[0];
+    magY = JY901.stcMag.h[1];
+    magZ = JY901.stcMag.h[2];
+
+    /*/ PSEUDO-CODE START
+
+    loop 3 secondi // taro il massimo
+    {
+        JY901.GetMag();
+        if JY901.stcMag.h[0] > maxVAL
+        {
+            maxVAL = JY901.stcMag.h[0];
+        }
+    }
+
+        minVAL = maxVAL
+    loop 3 secondi //taro il minimo partendo dal massimo
+    {
+        JY901.GetMag();
+        if JY901.stcMag.h[0] < minVAL
+        {
+            minVAL = JY901.stcMag.h[0]
+        }
+    }
+
+    //ho finito di tarare min e max ora uso "map" per portarlo in gradi da 0 a 359
+
+    map(JY901.stcMag.h[0],);
+    map(JY901.stcMag[0], minVAL, maxVAL, 0, 359)
+
+
+    // PSEUDO-CODE STOP */
+
+
 }
 
 void loop()
@@ -32,7 +76,11 @@ void loop()
 
     // deb("D: ");deb(UDPdir);deb(" S: ");deb(UDPspeed);deb(" T: ");deb(UDPtime);debln(" .");
 
-    MoveTo.Dir(UDPdir + 1, UDPspeed, UDPtime * 1000, micros());
+    MoveTo.Dir(UDPdir, UDPspeed, UDPtime * 1000, micros());
 
-    //delay(10);
+    UDPdir = 0;
+    UDPspeed = 0;
+    UDPtime = 0;
+    
+    delay(100);
 }

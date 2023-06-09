@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+// Function to calculate the best-fitting parabolic coefficients using the least squares method
+std::vector<double> calculateParabolicCoefficients(const std::vector<std::vector<double>>& points) {
+    int n = points.size(); // Number of data points
+
+    // Variables for the sums
+    double sumX = 0.0, sumX2 = 0.0, sumX3 = 0.0, sumX4 = 0.0, sumY = 0.0, sumXY = 0.0, sumX2Y = 0.0;
+
+    // Calculate the sums required for the least squares method
+    for (int i = 0; i < n; ++i) {
+        double x = points[i][0];
+        double y = points[i][1];
+        double x2 = x * x;
+        double x3 = x2 * x;
+        double x4 = x2 * x2;
+
+        sumX += x;
+        sumX2 += x2;
+        sumX3 += x3;
+        sumX4 += x4;
+        sumY += y;
+        sumXY += x * y;
+        sumX2Y += x2 * y;
+    }
+
+    // Calculate the coefficients of the best-fitting parabola equation
+    double denominator = n * sumX4 - sumX2 * sumX2;
+
+    double a = (n * sumX2Y - sumX2 * sumY) / denominator;
+    double b = (sumX4 * sumY - sumX2 * sumXY) / denominator;
+    double c = (sumX2 * sumXY - sumX * sumX2Y) / denominator;
+
+    // Return the coefficients as a vector
+    return {a, b, c};
+}
+
+// Function to calculate the y-coordinate for a given x-coordinate on the parabolic trajectory
+double calculateYCoordinate(const std::vector<double>& coefficients, double x) {
+    double a = coefficients[0];
+    double b = coefficients[1];
+    double c = coefficients[2];
+
+    // Calculate the y-coordinate using the parabolic equation
+    double y = a * x * x + b * x + c;
+
+    return y;
+}
+
+int main() {
+    // Example usage: Matrix representing data points (x, y)
+    std::vector<std::vector<double>> points = {{1.07,2.71},{4.58,7.85},{7.49,14.2},{10.52,17.51}};
+
+    // Calculate the parabolic coefficients
+    std::vector<double> coefficients = calculateParabolicCoefficients(points);
+
+    // Display the entire parabolic equation
+    std::cout << "Parabolic equation: y = " << coefficients[0] << " * x^2 + " << coefficients[1] << " * x + "
+              << coefficients[2] << std::endl;
+
+    // Input the x-coordinate
+    double xCoordinate;
+    std::cout << "Enter the x-coordinate: ";
+    std::cin >> xCoordinate;
+
+    // Calculate the y-coordinate on the parabolic trajectory
+    double yCoordinate = calculateYCoordinate(coefficients, xCoordinate);
+
+    // Display the calculated y-coordinate
+    std::cout << "For x = " << xCoordinate << ", y = " << yCoordinate << std::endl;
+
+    return 0;
+}

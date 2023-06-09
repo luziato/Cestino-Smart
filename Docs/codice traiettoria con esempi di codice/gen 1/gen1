@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+// Function to calculate the parabolic trajectory
+void calculateParabolicTrajectory(const std::vector<std::vector<double>>& points)
+{
+    int n = points.size(); // Number of data points
+
+    // Variables for the least squares method
+    double sumX = 0.0, sumX2 = 0.0, sumX3 = 0.0, sumX4 = 0.0;
+    double sumY = 0.0, sumXY = 0.0, sumX2Y = 0.0;
+
+    // Calculate the sums required for least squares
+    for (int i = 0; i < n; ++i)
+    {
+        double x = points[i][0];
+        double y = points[i][1];
+        sumX += x;
+        sumX2 += x * x;
+        sumX3 += x * x * x;
+        sumX4 += x * x * x * x;
+        sumY += y;
+        sumXY += x * y;
+        sumX2Y += x * x * y;
+    }
+
+    // Calculate the coefficients of the parabolic equation (y = a * x^2 + b * x + c)
+    double c = (sumX2 * sumX2Y - sumX3 * sumXY) / (sumX2 * sumX4 - sumX3 * sumX3);
+    double b = (sumX2Y - sumX4 * c) / sumX3;
+    double a = (sumXY - sumX3 * b - sumX2 * c) / sumX;
+
+    // Display the equation of the parabolic trajectory
+    std::cout << "Parabolic Trajectory Equation: y = " << a << " * x^2 + " << b << " * x + " << c << std::endl;
+
+    // Calculate and display the predicted y-coordinates for the given x-coordinates
+    std::cout << "Predicted Trajectory Points:" << std::endl;
+    for (int i = 0; i < n; ++i)
+    {
+        double x = points[i][0];
+        double y = a * x * x + b * x + c;
+        std::cout << x << ", " << y << std::endl;
+    }
+}
+
+int main()
+{
+    // Example usage: Matrix representing data points (x, y)
+    std::vector<std::vector<double>> points = {{0.31,2.79},{5.61,7.95},{7.13,15.24},{11.32,18.06}};
+
+    // Calculate the parabolic trajectory
+    calculateParabolicTrajectory(points);
+
+    return 0;
+}

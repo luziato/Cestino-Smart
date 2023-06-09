@@ -48,7 +48,7 @@ void Motor::moving(int dir, int pwm)
 
         case 1:
             /* CW */
-            digitalWrite(_enable, pwm);      //  Setting speed
+            analogWrite(_enable, pwm);      //  Setting speed
 
             digitalWrite(_dir1, HIGH);       //  Setting direction
             digitalWrite(_dir2, LOW);
@@ -56,7 +56,7 @@ void Motor::moving(int dir, int pwm)
         
         case 2:
             /* CCW */
-            digitalWrite(_enable, pwm);      //  Setting speed
+            analogWrite(_enable, pwm);      //  Setting speed
 
             digitalWrite(_dir1, LOW);       //  Setting direction
             digitalWrite(_dir2, HIGH);
@@ -64,7 +64,7 @@ void Motor::moving(int dir, int pwm)
 
         case 3:
             /* HARD BREAK */
-            digitalWrite(_enable, pwm);      //  Setting breaking speed
+            analogWrite(_enable, pwm);      //  Setting breaking speed
 
             digitalWrite(_dir1, HIGH);       //  Setting break
             digitalWrite(_dir2, HIGH);

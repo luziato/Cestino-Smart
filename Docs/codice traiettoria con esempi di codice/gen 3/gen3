@@ -1,0 +1,95 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <limits>
+
+struct ParabolicCoefficients {
+    double a, b, c;
+};
+
+// Function to calculate the parabolic trajectory coefficients
+ParabolicCoefficients calculateParabolicCoefficients(const std::vector<std::vector<double>>& points) {
+    int n = points.size(); // Number of data points
+
+    double sumX = 0.0, sumX2 = 0.0, sumX3 = 0.0, sumX4 = 0.0, sumY = 0.0, sumXY = 0.0, sumX2Y = 0.0;
+
+    for (int i = 0; i < n; ++i) {
+        double x = points[i][0];
+        double y = points[i][1];
+        double x2 = x * x;
+        double x3 = x2 * x;
+        double x4 = x2 * x2;
+        sumX += x;
+        sumX2 += x2;
+        sumX3 += x3;
+        sumX4 += x4;
+        sumY += y;
+        sumXY += x * y;
+        sumX2Y += x2 * y;
+    }
+
+    ParabolicCoefficients coefficients;
+    double denominator = (n * sumX4 - sumX2 * sumX2);
+
+    if (std::abs(denominator) <= std::numeric_limits<double>::epsilon()) {
+        // Avoid division by zero
+        coefficients.a = 0.0;
+        coefficients.b = 0.0;
+        coefficients.c = sumY / n;
+    } else {
+        coefficients.a = (n * sumX2Y - sumX2 * sumY) / denominator;
+        coefficients.b = (sumX4 * sumY - sumX2 * sumXY) / denominator;
+        coefficients.c = (sumXY - sumX * sumY / n) / (sumX2 - sumX * sumX / n);
+    }
+
+// Display the equation of the parabolic trajectory
+    std::cout << "Parabolic Trajectory Equation: y = " << coefficients.a << " * x^2 + " << coefficients.b << " * x + " << coefficients.c << std::endl;
+
+    return coefficients;
+}
+
+// Function to calculate the x-coordinate for a given y-coordinate on the parabolic trajectory
+double calculateXCoordinate(const ParabolicCoefficients& coefficients, double y) {
+    double a = coefficients.a;
+    double b = coefficients.b;
+    double c = coefficients.c;
+
+    double discriminant = b * b - 4 * a * (c - y);
+    if (discriminant < 0) {
+        // No real solution exists for the given y-coordinate
+        return std::numeric_limits<double>::quiet_NaN();
+    }
+
+    double x1 = (-b + std::sqrt(discriminant)) / (2 * a);
+    double x2 = (-b - std::sqrt(discriminant)) / (2 * a);
+
+    // Return the x-coordinate
+    return std::max(x1, x2);
+    
+}
+
+int main() {
+    while(true){
+    // Example usage: Matrix representing data points (x, y)
+    std::vector<std::vector<double>> points = {{0.31,2.79},{5.61,7.95},{7.13,15.24},{11.32,18.06}};
+
+    // Calculate the parabolic coefficients
+    ParabolicCoefficients coefficients = calculateParabolicCoefficients(points);
+
+    // Input the y-coordinate
+    double yCoordinate;
+    std::cout << "Enter the y-coordinate: ";
+    std::cin >> yCoordinate;
+
+    // Calculate the x-coordinate on the parabolic trajectory
+    double xCoordinate = calculateXCoordinate(coefficients, yCoordinate);
+
+    if (std::isnan(xCoordinate)) {
+        std::cout << "No real solution exists for the given y-coordinate." << std::endl;
+    } else {
+        std::cout << "For y = " << yCoordinate << ", x = " << xCoordinate << std::endl;
+    }
+
+    //return 0;
+}
+}
