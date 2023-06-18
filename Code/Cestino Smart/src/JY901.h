@@ -141,7 +141,6 @@ public:
 
 	CJY901();
 	void StartIIC();
-	void Tare();
 	void StartIIC(unsigned char ucAddr);
 	void CopeSerialData(unsigned char ucData);
 	short ReadWord(unsigned char ucAddr);

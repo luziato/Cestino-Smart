@@ -22,17 +22,6 @@ void CJY901::StartIIC(unsigned char ucAddr)
 	Wire.begin();
 }
 
-void Tare(int duration)
-{
-	
-	//while (millis() < timeToStop)
-	//{
-		
-	//}
-	
-	
-}
-
 void CJY901::CopeSerialData(unsigned char ucData)
 {
 	static unsigned char ucRxBuffer[250];

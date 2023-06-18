@@ -21,4 +21,6 @@ const unsigned char WEST_DIR1 = 8;      // WEST dir1 pin
 const unsigned char WEST_DIR2 = 13;     // WEST dir2 pin
 const unsigned char WEST_ENABLE = 12;   // WEST enable pin
 
+//int Vnord = 0;
+
 #endif

@@ -26,6 +26,9 @@ WiFiUDP Udp; // Instantiate UDP class
 unsigned char udpTXBuffer[255];
 unsigned char udpRXBuffer[255];
 
+unsigned long udpReconnectionTimer = 0;
+int reconnectingTimer = 4000;
+
 
 //********************************************
 
@@ -44,10 +47,7 @@ void UDPsetup()
 
   // UDP Connect
   Udp.begin(localPort);
-
-  delay(1000 * 3);
-  UDP_sendPaket(localPort, UDP_LOGIN, 0, 0);
-  deblnU("Inviato Login");
+  
 }
 
 char *UDP_getData(uint8_t *pak)
@@ -88,6 +88,8 @@ void UDP_sendPaket(int sockport, uint8_t Identfier, uint8_t *pak, size_t msize)
 void UDPfunc(int *_dir, int *_speed, int *_time)
 {
   int packetSize = Udp.parsePacket();
+
+  reconnect(reconnectingTimer);
   
   if (packetSize)
   {
@@ -96,10 +98,10 @@ void UDPfunc(int *_dir, int *_speed, int *_time)
     Udp.read(udpRXBuffer, 255);
     UDP_getData(udpRXBuffer);
 
-    debU("-> ");
-    deblnU((char *)UDP_getData(udpRXBuffer));
-      parseData(_dir, _speed, _time);
-      //printData(true);
+    UDP_getData(udpRXBuffer);
+    parseData(udpRXBuffer, _dir, _speed, _time);
+    
+    //printData(true);
 
   }
   else
@@ -117,22 +119,37 @@ void UDPfunc(int *_dir, int *_speed, int *_time)
 //
 
 // UDP to Int
-void parseData(int *_dir, int *_speed, int *_time)
+void parseData(unsigned char* rxbf, int *_dir, int *_speed, int *_time)
 { // split the data into its parts
 
   char *strtokIndx; // this is used by strtok() as an index
 
-  // Converts direction
-  strtokIndx = strtok((char *)UDP_getData(udpRXBuffer), ";"); // get the first part - the string
-  *(_dir) = atoi(strtokIndx); // convert this part to an integer
+    switch(rxbf[0])
+    {
+      case UDP_MESSAGE:
+          // Converts direction
+          strtokIndx = strtok((char *)UDP_getData(rxbf), ";"); // get the first part - the string
+          *(_dir) = atoi(strtokIndx); // convert this part to an integer
 
-  // Converts speed
-  strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
-  *(_speed) = atoi(strtokIndx);       // convert this part to an integer
+          // Converts speed
+          strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+          *(_speed) = atoi(strtokIndx);       // convert this part to an integer
 
-  // Converts time
-  strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
-  *(_time) = atoi(strtokIndx);        // convert this part to an integer
+          // Converts time
+          strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+          *(_time) = atoi(strtokIndx);        // convert this part to an integer
+
+          udpReconnectionTimer = millis();
+
+          debU(" dir: ");debU(*_dir);debU("; speed: ");debU(*_speed);debU("; time: ");debU(*_time);deblnU("; end message");
+        break;
+
+      case UDP_POOLING:
+          udpReconnectionTimer = millis();
+          deblnU("UDP_POOLING");
+        break;
+    }
+ 
 }
 
 // Print UDP paket
@@ -202,4 +219,15 @@ void printWiFiData()
 
   debU("Gateway IP : ");
   deblnU((IPAddress)WiFi.gatewayIP());
+}
+
+void reconnect(int period)
+{
+  if ((udpReconnectionTimer + period) < millis() )
+  {
+    UDP_sendPaket(localPort, UDP_LOGIN, 0, 0);
+    debU(udpReconnectionTimer);debU(" ; ");debU(period);debU(" ; ");debU(millis());debU(" ; ");debU(udpReconnectionTimer+period);debU(" ; ");
+    deblnU("Inviato Login");
+    udpReconnectionTimer = millis();
+  }
 }

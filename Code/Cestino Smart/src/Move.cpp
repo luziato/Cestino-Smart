@@ -37,6 +37,9 @@ void Move::Brake()
 
 void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 {
+    // Compass compass;
+    _bussola.Angle_Correction();
+
     _dir = dir;
 
     debM1("Dir: ");
@@ -58,16 +61,16 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 
     if (_dir != 0)
     {
-        _time.Running= false;
+        _time.Running = false;
     }
-    
 
-/*    _time.oldTime = _time.time;
+    /*    _time.oldTime = _time.time;
 
-    _time.EndMicros = micros() + _time.time;
-    _time.time = 0;
-    deblnM(_time.EndMicros);
-*/
+        _time.EndMicros = micros() + _time.time;
+        _time.time = 0;
+        deblnM(_time.EndMicros);
+    */
+
     switch (_dir)
     {
     case North:
@@ -336,19 +339,29 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         break;
 
     case CW:
-        _mNorth.moving(2, speed);
-        _mEast.moving(1, speed);
-        _mSouth.moving(2, speed);
-        _mWest.moving(1, speed);
-        deblnM("Rotating CW");
+        if (!_time.Running) // If running is true ther's no need to set the motors again
+        {
+            _mNorth.moving(2, speed);
+            _mEast.moving(1, speed);
+            _mSouth.moving(2, speed);
+            _mWest.moving(1, speed);
+            _time.EndMicros = now + time;
+            _time.Running = true;
+            deblnM("Rotating CW");
+        }
         break;
 
     case CCW:
-        _mNorth.moving(2, speed);
-        _mEast.moving(2, speed);
-        _mSouth.moving(2, speed);
-        _mWest.moving(2, speed);
-        deblnM("Rotating CcW");
+        if (!_time.Running) // If running is true ther's no need to set the motors again
+        {
+            _mNorth.moving(2, speed);
+            _mEast.moving(2, speed);
+            _mSouth.moving(2, speed);
+            _mWest.moving(2, speed);
+            _time.EndMicros = now + time;
+            _time.Running = true;
+            deblnM("Rotating CcW");
+        }
 
     case _Brake:
 
@@ -356,7 +369,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         _mEast.moving(3, 255);
         _mSouth.moving(3, 255);
         _mWest.moving(3, 255);
-        delay(speed / 3);
+        delay(speed / 2);
         _mNorth.moving(0, 0);
         _mEast.moving(0, 0);
         _mSouth.moving(0, 0);
@@ -364,10 +377,14 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         break;
 
     default:
-        // deblnM(_time[nmot].Running); deblnM( _time[nmot].EndMicros < micros());
+        debM(now);
+        debM(" ; end micros");
+        debM(_time.EndMicros);
+        debM(" ; ");
+        deblnM(_time.Running);
         if (_time.Running)
         {
-            if (micros() > _time.EndMicros) // checking if the motor need to stop (freeWheel)
+            if (now > _time.EndMicros) // checking if the motor need to stop (freeWheel)
             {
                 deblnM("stop mot");
                 _time.Running = false;
@@ -376,8 +393,15 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
                 _mSouth.moving(0, 0);
                 _mWest.moving(0, 0);
             }
-            break;
-            _dir = 0; // Consume the variable so you don't re set the same command
         }
+        break;
     }
 }
+
+void Move::Tare(unsigned int duration)
+{
+    Dir(CW, 200, duration + 100, millis());
+    _bussola._tare(duration);
+    Dir(_Brake, 255, 0, millis());
+}
+

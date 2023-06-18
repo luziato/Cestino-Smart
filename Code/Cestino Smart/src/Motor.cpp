@@ -3,8 +3,7 @@
 
 Motor::Motor(){}
 
-Motor::~Motor()
-{}
+Motor::~Motor(){}
 
 void Motor::begin(int dir1, int dir2, int Enable)
 {
@@ -43,7 +42,7 @@ void Motor::moving(int dir, int pwm)
         {
         case 0:
             /* FREEWHEEL */
-            digitalWrite(_enable, LOW);     //  Low ENABLE state means motor free running
+            analogWrite(_enable, LOW);     //  Low ENABLE state means motor free running
             break;
 
         case 1:
@@ -73,7 +72,7 @@ void Motor::moving(int dir, int pwm)
         
         default:
 
-            digitalWrite(_enable, LOW);     //  Low ENABLE state means motor free running
+            analogWrite(_enable, LOW);     //  Low ENABLE state means motor free running
 
             break;
         }

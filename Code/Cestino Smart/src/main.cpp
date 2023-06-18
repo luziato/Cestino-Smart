@@ -9,18 +9,14 @@
 #include "Move.h"
 #include "_UDP.h"
 
-#include <JY901.h>
 
 Move MoveTo;
+
+Compass compass;
 
 int UDPdir;
 int UDPspeed;
 int UDPtime;
-
-
-double magX = 0;
-double magY = 0;
-double magZ = 0;
 
 void setup()
 {
@@ -28,17 +24,22 @@ void setup()
 
     UDPsetup();
 
+    //Bussola
+    compass.Begin();
+    delay(5);
+    compass.setNord();
+
     debln("setup completed");
 
     // debln("TESTING...");
-
+/*
     JY901.StartIIC();
     JY901.GetMag();
     magX = JY901.stcMag.h[0];
     magY = JY901.stcMag.h[1];
     magZ = JY901.stcMag.h[2];
 
-    /*/ PSEUDO-CODE START
+    / PSEUDO-CODE START
 
     loop 3 secondi // taro il massimo
     {

@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include "const.h"
 #include "Motor.h"
+#include "Compass.h"
 
 #define N_MAX_DIR 4
 
@@ -15,6 +16,8 @@ private:
     Motor _mEast;
     Motor _mSouth;
     Motor _mWest;
+
+    Compass _bussola;
 
     // Timer variables
     typedef struct
@@ -61,9 +64,11 @@ public:
      * @param now Time in witch the method is called
      */
     void Dir(int dir, int speed, unsigned long time, unsigned long now);
+    
 
     void KILL();
     void Brake();
+    void Tare(unsigned int duration);
 };
 
 #endif
