@@ -1,4 +1,5 @@
 #include "Move.h"
+#include "_UDP.h"
 
 /*********DEBUGGER************/
 #include "debug.h"
@@ -37,10 +38,15 @@ void Move::Brake()
 
 void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 {
-    // Compass compass;
-    _bussola.Angle_Correction();
+    //uint8_t buflog[30];
 
-    _dir = dir;
+   // _dir = Angle_Correction(dir);
+
+    if (dir != 0)
+    {
+        //sprintf((char *)buflog, "%d,%d\n", dir, _dir);
+        //UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
+    }
 
     debM1("Dir: ");
     debM1(dir);
@@ -369,7 +375,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         _mEast.moving(3, 255);
         _mSouth.moving(3, 255);
         _mWest.moving(3, 255);
-        delay(speed / 2);
+        delay(speed / 1.5);
         _mNorth.moving(0, 0);
         _mEast.moving(0, 0);
         _mSouth.moving(0, 0);
@@ -377,11 +383,11 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         break;
 
     default:
-        debM(now);
-        debM(" ; end micros");
-        debM(_time.EndMicros);
-        debM(" ; ");
-        deblnM(_time.Running);
+        //debM(now);
+        //debM(" ; end micros");
+        //debM(_time.EndMicros);
+        //debM(" ; ");
+        //deblnM(_time.Running);
         if (_time.Running)
         {
             if (now > _time.EndMicros) // checking if the motor need to stop (freeWheel)
@@ -400,8 +406,39 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 
 void Move::Tare(unsigned int duration)
 {
-    Dir(CW, 200, duration + 100, millis());
+    uint8_t buflog[30];
+
+    int _nord = _bussola.GetAngleNord();
+    int curangle, nloop = 0;
+    Dir(CW, 180, duration + 100, millis());
     _bussola._tare(duration);
     Dir(_Brake, 255, 0, millis());
+
+    do
+    {
+        Dir(CW, 180, 30, millis());
+
+        delay(30);
+        Dir(_Brake, 255, 0, millis());
+        delay(100);
+
+        curangle = _bussola.GetAngle();
+
+        sprintf((char *)buflog, "%d,%d,%d", curangle, _nord, nloop);
+        UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
+        
+
+        if ((curangle - 4 >= _nord && curangle + 4 <= _nord) || nloop++ > 20)
+            break;
+    } while (1);
 }
 
+int Move::Angle_Correction(int _dir)
+{
+    JY901.GetAngle();
+
+    int correctDirection = _dir + ((JY901.stcAngle.Angle[2] / 32768 * 180) / 45);
+    // map(JY901.stcAngle.Angle[2]/32768*180, value.min, value.max, 1, 8);
+
+    return correctDirection;
+}

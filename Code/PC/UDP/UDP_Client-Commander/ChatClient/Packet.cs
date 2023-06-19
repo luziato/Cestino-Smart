@@ -15,9 +15,11 @@ namespace ChatApplication
 
     public enum DataIdentifier
     {
-        Message,
+        Message = 1,
         LogIn,
+        Polling,
         LogOut,
+        List,
         Null
     }
 

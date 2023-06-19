@@ -65,7 +65,7 @@ namespace ChatClient
                 Controller = Gamepad.Gamepads.First();
                 var Reading = Controller.GetCurrentReading();
 
-                if 
+                
 
                 switch (Reading.Buttons)
                 {                                       

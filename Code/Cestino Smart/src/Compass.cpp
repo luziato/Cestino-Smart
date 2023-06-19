@@ -13,26 +13,19 @@ void Compass::Begin()
     JY901.StartIIC();
 }
 
-void Compass::Angle_Correction()
-{
-    JY901.GetMag();
-
-    _Vnord++;
-    // JY901.stcMag.h[0];
-}
-
 void Compass::setNord()
 {
     int _data = 0;
 
     for (int i = 0; i <= 9; i++)
     {
-        JY901.GetMag();
-        _data += round(JY901.stcMag.h[0]);
-        delay(11);
+        JY901.GetAngle();
+        _data += (int)JY901.stcAngle.Angle[2]/32768*180;
+        delay(6);
     }
 
-    _Vnord = round(_data / 10);
+    Vnord = round(_data / 10);
+    debU("Vnord= ");deblnU(Vnord);
 }
 
 void Compass::_tare(unsigned int _duration)
@@ -42,25 +35,23 @@ void Compass::_tare(unsigned int _duration)
 
     while (millis() - _startTime < _duration)
     {
-        JY901.GetMag();
+        JY901.GetAngle();
 
-        int _sensorValue = round(JY901.stcMag.h[0]); // Replace JY901.stcMag.h[0] with your actual sensor reading
+        int _sensorValue = round(JY901.stcAngle.Angle[2]/32768*180); // Replace JY901.stcAngle.Angle[2]/32768*180 with your actual sensor reading
 
-        _value.max = max(_sensorValue, _value.max);
-        _value.min = min(_sensorValue, _value.min);
-        delay(11);
+        value.max = max(_sensorValue, value.max);
+        value.min = min(_sensorValue, value.min);
+        delay(6);
     }
 }
 
-int Compass::GetAngle(bool _isTaring)
+int Compass::GetAngleNord(void)
 {
-    JY901.GetMag();
+    return Vnord;    
+}
 
-    if (_isTaring)
-    {
-        return(JY901.stcMag.h[0]);
-    } else
-    {
-        return( map(JY901.stcMag.h[0], _value.min, _value.max, -180, 180) );
-    }
+int Compass::GetAngle(void)
+{
+    JY901.GetAngle();
+    return JY901.stcAngle.Angle[2]/32768*180;    
 }

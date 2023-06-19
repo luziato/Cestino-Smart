@@ -69,6 +69,7 @@ public:
     void KILL();
     void Brake();
     void Tare(unsigned int duration);
+    int Angle_Correction(int _dir);
 };
 
 #endif

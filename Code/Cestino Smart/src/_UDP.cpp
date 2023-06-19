@@ -57,7 +57,6 @@ char *UDP_getData(uint8_t *pak)
 
 void UDP_sendPaket(int sockport, uint8_t Identfier, uint8_t *pak, size_t msize)
 {
-
   Udp.beginPacket(computerIP, sockport);
 
   udpTXBuffer[0] = (uint8_t)Identfier; // ID
@@ -90,9 +89,12 @@ void UDPfunc(int *_dir, int *_speed, int *_time)
   int packetSize = Udp.parsePacket();
 
   reconnect(reconnectingTimer);
+
+  deblnU(packetSize);
   
   if (packetSize)
   {
+    deblnU(packetSize);
     // read the packet into packetBufffer
     // int len = Udp.read(udpRXBuffer, 255);
     Udp.read(udpRXBuffer, 255);

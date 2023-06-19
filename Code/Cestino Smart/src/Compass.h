@@ -5,28 +5,31 @@
 
 #include <JY901.h>
 
+
+
+
 class Compass
 {
-private:
-    int _Vnord = 0;
-
+public:
     typedef struct
     {
         int min; // Initialize the minimum value with a large number
         int max; // Initialize the maximum value with zero
-    } _Value;
+    } Value;
 
-    _Value _value; // _value consructor
+    
+    Value value; // value consructor
 
-public:
     Compass();
     ~Compass();
 
+    int Vnord = 0;
+
     void Begin();
-    int GetAngle(bool isTaring);
+    int GetAngleNord(void);
     void _tare(unsigned int _duration);
     void setNord();
-    void Angle_Correction();
+    int GetAngle(void);
 };
 
 #endif
