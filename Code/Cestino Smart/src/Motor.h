@@ -25,7 +25,7 @@ public:
      * @param dir 0: Freewheel 1: CW 2: CCW 3: Hard brake
      * @param pwm From 0 to 255
     */
-    void moving(int dir, int pwm);
+    void moving(int dir, int pwm, int correction);
 };
 
 #endif

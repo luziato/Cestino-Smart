@@ -1,0 +1,95 @@
+#include "Arduino.h"
+
+#include "ArduPID.h"
+#include "Compass.h"
+#include "Move.h"
+
+#define CW 13
+#define CCW 14
+
+ArduPID Controller;
+
+Compass compass;
+
+Move MoveTo;
+
+double input;
+double output;
+double Bias = 255;
+
+// Arbitrary setpoint and gains - adjust these as fit for your project:
+double setpoint = 0;
+double p = 1.3;
+double i = 1;
+double d = 0.8;
+
+int dir = 0;
+
+void setup()
+{
+  Serial.begin(115200);
+  //while (!Serial){} // wait for serial port to open
+  //Serial.println("connected...");
+
+  Controller.begin(&input, &output, &setpoint, p, i, d);
+  Controller.setOutputLimits(0, 512);
+  Controller.setWindUpLimits(-10, 10); // Groth bounds for the integral term to prevent integral wind-up
+  Controller.setBias(Bias);
+
+  compass.Begin();
+
+  delay(2000);
+  //Serial.println("Tare startarting... 5 senconds from now!");
+  MoveTo.Tare(6000);
+  //Serial.println("Tare done...");
+
+  //Serial.print("Vnord/Setpoint: ");
+  setpoint = compass.GetNord();
+  //Serial.println(setpoint);
+
+  delay(2000);
+
+  Controller.start();
+
+  //Serial.println("Setup Completed...");
+
+  delay(2000);
+}
+
+void loop()
+{
+
+  input = compass.GetAllAngleRAW(true, 1); // Replace with sensor feedback
+
+  Controller.compute();
+
+  output = output - Bias;
+
+  if (output < 0)
+  {
+    dir = CW;
+  } else
+  {
+    dir = CCW;
+  }
+  
+  MoveTo.Dir(dir,abs(output), 1*1000, micros());
+
+  printData();
+
+  delay(50);
+}
+
+void printData()
+{
+  Serial.print("nord: ");
+  Serial.print(compass.GetNord());
+  Serial.print(" angle: ");
+  Serial.print(input);
+  Serial.print(" correction: ");
+  Serial.print(output);
+  Serial.print(" outputABS ");
+  Serial.print(abs(output));
+  Serial.print(" bias: ");
+  Serial.println(Bias);
+}

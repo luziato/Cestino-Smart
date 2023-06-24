@@ -62,7 +62,7 @@ void CJY901::readRegisters(unsigned char deviceAddr,unsigned char addressToRead,
   while(Wire.available() < bytesToRead); //Hang out until we get the # of bytes we expect
 
   for(int x = 0 ; x < bytesToRead ; x++)
-    dest[x] = Wire.read();    
+    dest[x] = (char)Wire.read();    
 }
 void CJY901::writeRegister(unsigned char deviceAddr,unsigned char addressToWrite,unsigned char bytesToRead, char *dataToWrite)
 {

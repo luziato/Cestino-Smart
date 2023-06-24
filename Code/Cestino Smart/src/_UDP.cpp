@@ -45,8 +45,12 @@ void UDPsetup()
   // Connect to Wifi Access Point
   connectToAP();
 
+  delay(2000);
+
   // UDP Connect
   Udp.begin(localPort);
+  delay(500);
+  reconnect(reconnectingTimer, true);
   
 }
 
@@ -57,7 +61,6 @@ char *UDP_getData(uint8_t *pak)
 
 void UDP_sendPaket(int sockport, uint8_t Identfier, uint8_t *pak, size_t msize)
 {
-
   Udp.beginPacket(computerIP, sockport);
 
   udpTXBuffer[0] = (uint8_t)Identfier; // ID
@@ -89,7 +92,7 @@ void UDPfunc(int *_dir, int *_speed, int *_time)
 {
   int packetSize = Udp.parsePacket();
 
-  reconnect(reconnectingTimer);
+  reconnect(reconnectingTimer, false);
   
   if (packetSize)
   {
@@ -146,7 +149,7 @@ void parseData(unsigned char* rxbf, int *_dir, int *_speed, int *_time)
 
       case UDP_POOLING:
           udpReconnectionTimer = millis();
-          deblnU("UDP_POOLING");
+          //deblnU("UDP_POOLING");
         break;
     }
  
@@ -221,13 +224,28 @@ void printWiFiData()
   deblnU((IPAddress)WiFi.gatewayIP());
 }
 
-void reconnect(int period)
+void reconnect(int period, bool immeidately)
 {
-  if ((udpReconnectionTimer + period) < millis() )
+  if ((udpReconnectionTimer + period) < millis() || immeidately )
   {
+    UDP_sendPaket(localPort, UDP_LOGOUT, 0, 0);
     UDP_sendPaket(localPort, UDP_LOGIN, 0, 0);
     debU(udpReconnectionTimer);debU(" ; ");debU(period);debU(" ; ");debU(millis());debU(" ; ");debU(udpReconnectionTimer+period);debU(" ; ");
     deblnU("Inviato Login");
     udpReconnectionTimer = millis();
   }
+}
+
+void UDPlogS (char* leb, char* log)
+{
+  uint8_t _log[50];
+  sprintf((char*)_log, "%s: %s", leb, log);
+  UDP_sendPaket(30000, UDP_MESSAGE, _log, strlen((char *)_log));
+}
+
+void UDPlogI (char* leb, int log)
+{
+  uint8_t _log[50];
+  sprintf((char*)_log, "%s: %d", leb, log);
+  UDP_sendPaket(30000, UDP_MESSAGE, _log, strlen((char*)_log));
 }

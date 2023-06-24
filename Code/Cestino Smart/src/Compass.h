@@ -4,29 +4,41 @@
 // #include "Arduino.h"
 
 #include <JY901.h>
+#include "ArduPID.h"
 
 class Compass
 {
 private:
-    int _Vnord = 0;
+    double mapF(long x, long in_min, long in_max, long out_min, long out_max);
 
-    typedef struct
-    {
-        int min; // Initialize the minimum value with a large number
-        int max; // Initialize the maximum value with zero
-    } _Value;
-
-    _Value _value; // _value consructor
+    double input;
+    double output;
+    double Bias = 255;
 
 public:
+    typedef struct
+    {
+        short min; // Initialize the minimum value with a large number
+        short max; // Initialize the maximum value with zero
+    } Value;
+
+    Value value; // value consructor
+
     Compass();
     ~Compass();
 
+    int Vnord = 0;
+
     void Begin();
-    int GetAngle(bool isTaring);
+    int GetNord(void);
     void _tare(unsigned int _duration);
     void setNord();
-    void Angle_Correction();
+    void setForcedNord();
+    int GetAngle();
+    int GetAngleRAW(void);
+    int GetAllAngleRAW(bool _prop, int _axis);
+    //int CorrectDir();
+    int Correct();
 };
 
 #endif
