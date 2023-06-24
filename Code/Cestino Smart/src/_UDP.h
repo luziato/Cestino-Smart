@@ -29,5 +29,7 @@ extern void UDPfunc(int *_dir, int *_speed, int *_time);
      * @brief Reconnects the robot after the specified time if no poolling mesagge are foud
      * @param period Time to wait before the trigger
      */
-extern void reconnect(int period);
+extern void reconnect(int period, bool immeidately);
+extern void UDPlogS(char* leb, char* log);
+extern void UDPlogI(char* leb, int log);
 

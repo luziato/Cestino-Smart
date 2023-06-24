@@ -17,8 +17,6 @@ private:
     Motor _mSouth;
     Motor _mWest;
 
-    Compass _bussola;
-
     // Timer variables
     typedef struct
     {
@@ -69,7 +67,7 @@ public:
     void KILL();
     void Brake();
     void Tare(unsigned int duration);
-    int Angle_Correction(int _dir);
+    void Angle_Correction();
 };
 
 #endif

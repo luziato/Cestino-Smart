@@ -23,13 +23,11 @@ void setup()
 
     UDPsetup();
 
-   /* //Bussola
+    //Bussola
     compass.Begin();
-    delay(5);
-    compass.setNord();
 
-    MoveTo.Tare(3000);
-*/
+    MoveTo.Tare(6000);
+
     debln("setup completed");
 
     // debln("TESTING...");
@@ -49,6 +47,6 @@ void loop()
     UDPspeed = 0;
     UDPtime = 0;
     
-    delay(100);
+    delay(1);
 }
 
