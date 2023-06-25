@@ -41,12 +41,12 @@ void loop()
 
     // deb("D: ");deb(UDPdir);deb(" S: ");deb(UDPspeed);deb(" T: ");deb(UDPtime);debln(" .");
 
-    MoveTo.Dir(UDPdir, UDPspeed, UDPtime * 1000, micros());
+    MoveTo.Dir4(UDPdir, UDPspeed, UDPtime * 1000, micros());
 
     UDPdir = 0;
     UDPspeed = 0;
     UDPtime = 0;
     
-    delay(1);
+    //delay(1);
 }
 

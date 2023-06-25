@@ -2,7 +2,7 @@
 #define debug_h
 
 /*****************_SET_*****************/
-    #define DEBUG 1
+    #define DEBUG 0
         #define DEBUG_COMPASS 1
         #define DEBUG_UDP 0
         #define DEBUG_MOVE 1
