@@ -55,15 +55,15 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     debM1("Dir:");
     debM1(dir);
     debM1(",S:");
-    debM1(speed/2);
-    //debM1(",T:");
-    //debM1(time);
+    debM1(speed / 2);
+    // debM1(",T:");
+    // debM1(time);
     debM1(",Ang:");
     debM1(compass.GetAllAngleRAW(true, 1));
     debM1(",Corr:");
     debM1(_correct);
-    //debM1(" micros: ");
-    //debM1(now);
+    // debM1(" micros: ");
+    // debM1(now);
     deblnM1(" .");
 
     _time.time = time;
@@ -361,7 +361,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
             _mWest.moving(2, speed, 0);
             _time.EndMicros = now + time;
             _time.Running = true;
-            //deblnM("Rotating CW");
+            // deblnM("Rotating CW");
         }
         break;
 
@@ -374,7 +374,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
             _mWest.moving(1, speed, 0);
             _time.EndMicros = now + time;
             _time.Running = true;
-            //deblnM("Rotating CW");
+            // deblnM("Rotating CW");
         }
         break;
 
@@ -402,7 +402,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 
             if (now > _time.EndMicros) // checking if the motor need to stop (freeWheel)
             {
-                //deblnM("stop mot");
+                // deblnM("stop mot");
                 _time.Running = false;
                 _mNorth.moving(0, 0, 0);
                 _mEast.moving(0, 0, 0);
@@ -419,34 +419,142 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     }
 }
 
+void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
+{
+    // uint8_t buflog[30];
+
+    _dir = dir;
+
+    int _correct = compass.Correct();
+
+    /*if (dir != 0)
+    {
+        // sprintf((char *)buflog, "%d,%d\n", dir, _dir);
+        // UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
+    }*/
+
+    debM1("Dir:");
+    debM1(dir);
+    debM1(",S:");
+    debM1(speed / 2);
+    // debM1(",T:");
+    // debM1(time);
+    debM1(",Ang:");
+    debM1(compass.GetAllAngleRAW(true, 1));
+    debM1(",Corr:");
+    debM1(_correct);
+    // debM1(" micros: ");
+    // debM1(now);
+    deblnM1(" .");
+
+    _time.time = time;
+
+    if (_time.time > 5000000) // TIME GUARD: Robot cannot (and has no need to) run a command for more than 10sec for safety
+    {
+        _time.time = 5000000;
+    }
+
+    if (_dir != 0)
+    {
+        _time.Running = false;
+    }
+
+    _dir = RAD(_dir);
+
+    // calc mot1
+    mot1.speed = speed * cos((_dir - _motAng.mot1) - 90);
+
+    if (mot1.speed != 0)
+    {
+        if (mot1.speed > 0)
+        {
+            mot1.dir = 1;
+        }
+        else
+        {
+            mot1.dir = 2;
+        }
+    }
+    else
+    {
+        mot1.dir = 0;
+    }
+
+    // calc mot2
+    mot2.speed = speed * cos((_dir - _motAng.mot2) - 90);
+
+    if (mot2.speed != 0)
+    {
+        if (mot2.speed > 0)
+        {
+            mot2.dir = 1;
+        }
+        else
+        {
+            mot2.dir = 2;
+        }
+    }
+    else
+    {
+        mot2.dir = 0;
+    }
+
+    // calc mot3
+    mot3.speed = speed * cos((_dir - _motAng.mot3) - 90);
+
+    if (mot3.speed != 0)
+    {
+        if (mot3.speed > 0)
+        {
+            mot3.dir = 1;
+        }
+        else
+        {
+            mot3.dir = 2;
+        }
+    }
+    else
+    {
+        mot3.dir = 0;
+    }
+
+    // set all motor all at onece
+    if (!_time.Running) // If running is true ther's no need to set the motors again
+    {
+        _mNorth.moving(mot1.dir, mot1.speed, _correct);
+        _mEast.moving(mot2.dir, mot2.speed, _correct);
+        _mSouth.moving(mot3.dir, mot3.speed, _correct);
+        _time.EndMicros = now + time;
+        _time.Running = true;
+        deblnM("Moving");
+    }
+
+    if (_time.Running)
+    {
+
+        if (now > _time.EndMicros) // checking if the motor need to stop (freeWheel)
+        {
+            // deblnM("stop mot");
+            _time.Running = false;
+            _mNorth.moving(0, 0, 0);
+            _mEast.moving(0, 0, 0);
+            _mSouth.moving(0, 0, 0);
+            deblnM("Move done");
+        }
+    }
+    else
+    {
+        Angle_Correction();
+    }
+}
+
 void Move::Tare(unsigned int duration)
 {
     // uint8_t buflog[50];
 
-    // int _nord = abs(compass.GetNord());
-    // int curangle, nloop = 0;
-
     Dir(CW, 80, duration + 100, millis());
     compass._tare(duration);
     Dir(_Brake, 255, 0, millis());
-    /*
-        do
-        {
-            Dir(CW, 180, 30, millis());
-
-            delay(30);
-            Dir(_Brake, 255, 0, millis());
-            delay(100);
-
-            curangle = abs(compass.GetAngle());
-
-            sprintf((char *)buflog, "%d,%d,%d", curangle, _nord, nloop);
-            UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
-
-
-            if ((_nord >= (curangle - 50)  && _nord <= curangle + 50) || nloop++ > 100)
-                break;
-        } while (1);*/
 }
 
 void Move::Angle_Correction()
@@ -455,15 +563,18 @@ void Move::Angle_Correction()
 
     if (abs(correct) > 10)
     {
-        if (correct>0)
+        if (correct > 0)
         {
-            Dir(CW, 130 + abs(correct), 1*1000, micros());
-        } else
-        {
-            Dir(CCW, 130 + abs(correct), 1*1000, micros());
+            Dir(CW, 130 + abs(correct), 1 * 1000, micros());
         }
-        
-        
-        
+        else
+        {
+            Dir(CCW, 130 + abs(correct), 1 * 1000, micros());
+        }
     }
+}
+
+double Move::RAD(int _deg)
+{
+    return (_deg * (3.14159265359 / 180));
 }
