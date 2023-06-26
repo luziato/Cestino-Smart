@@ -11,33 +11,56 @@ int trigger = A0;
 
 Move::Move()
 {
-    _mNorth.begin(NORTH_DIR1, NORTH_DIR2, NORTH_ENABLE);
-    _mEast.begin(EAST_DIR1, EAST_DIR2, EAST_ENABLE);
-    _mSouth.begin(SOUTH_DIR1, SOUTH_DIR2, SOUTH_ENABLE);
-    _mWest.begin(WEST_DIR1, WEST_DIR2, WEST_ENABLE);
+    _mot1.begin(NORTH_DIR1, NORTH_DIR2, NORTH_ENABLE);
+    _mot2.begin(EAST_DIR1, EAST_DIR2, EAST_ENABLE);
+    _mot3.begin(SOUTH_DIR1, SOUTH_DIR2, SOUTH_ENABLE);
+    _mot4.begin(WEST_DIR1, WEST_DIR2, WEST_ENABLE);
 }
 
 Move::~Move() {}
 
+void Move::test()
+{
+    _mot1.moving(1, 255, 0);
+    delay(2000);
+    KILL();
+    _mot2.moving(1, 255, 0);
+    delay(2000);
+    KILL();
+    _mot3.moving(1, 255, 0);
+    delay(2000);
+    KILL();
+    _mot4.moving(1, 255, 0);
+    delay(2000);
+    KILL();
+    _mot1.moving(1, 255, 0);
+    _mot2.moving(1, 255, 0);
+    _mot3.moving(1, 255, 0);
+    _mot4.moving(1, 255, 0);
+    delay(500);
+    KILL();
+
+}
+
 void Move::KILL()
 {
-    _mNorth.moving(0, 0, 0);
-    _mEast.moving(0, 0, 0);
-    _mSouth.moving(0, 0, 0);
-    _mWest.moving(0, 0, 0);
+    _mot1.moving(0, 0, 0);
+    _mot2.moving(0, 0, 0);
+    _mot3.moving(0, 0, 0);
+    _mot4.moving(0, 0, 0);
 }
 
 void Move::Brake()
 {
-    _mNorth.moving(3, 255, 0);
-    _mEast.moving(3, 255, 0);
-    _mSouth.moving(3, 255, 0);
-    _mWest.moving(3, 255, 0);
+    _mot1.moving(3, 255, 0);
+    _mot2.moving(3, 255, 0);
+    _mot3.moving(3, 255, 0);
+    _mot4.moving(3, 255, 0);
     delay(100);
-    _mNorth.moving(0, 0, 0);
-    _mEast.moving(0, 0, 0);
-    _mSouth.moving(0, 0, 0);
-    _mWest.moving(0, 0, 0);
+    _mot1.moving(0, 0, 0);
+    _mot2.moving(0, 0, 0);
+    _mot3.moving(0, 0, 0);
+    _mot4.moving(0, 0, 0);
 }
 
 void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
@@ -94,10 +117,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case North:
         if (!_time.Running) // If running is true ther's no need to set the motors again
         {
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             deblnM("North");
@@ -107,10 +130,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case NorthEast:
         if (!_time.Running)
         {
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             _dir = 0;
@@ -121,10 +144,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case East:
         if (!_time.Running)
         {
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             deblnM("East");
@@ -134,10 +157,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case SouthEast:
         if (!_time.Running)
         {
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             deblnM("SouthEast");
@@ -147,10 +170,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case South:
         if (!_time.Running)
         {
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             deblnM("South");
@@ -160,10 +183,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case SouthWest:
         if (!_time.Running)
         {
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             deblnM("SouthWest");
@@ -173,10 +196,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case West:
         if (!_time.Running)
         {
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             deblnM("West");
@@ -186,10 +209,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case NorthWest:
         if (!_time.Running)
         {
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             deblnM("NorthWest");
@@ -201,10 +224,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         {
             deblnM("stop mot");
             _time.Running = false;
-            _mNorth.moving(0, 0, 0);
-            _mEast.moving(0, 0, 0);
-            _mSouth.moving(0, 0, 0);
-            _mWest.moving(0, 0, 0);
+            _mot1.moving(0, 0, 0);
+            _mot2.moving(0, 0, 0);
+            _mot3.moving(0, 0, 0);
+            _mot4.moving(0, 0, 0);
         }
         break;
 
@@ -212,31 +235,31 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         if (!_time.Running)
         {
             time = 1000;
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("East");
             delay(time);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("South");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("West");
             delay(time);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("North");
             delay(time);
             Brake();
@@ -247,59 +270,59 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         if (!_time.Running)
         {
             time = 500;
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("North");
             delay(time);
             Brake();
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("NorthEast");
             delay(time);
             Brake();
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("East");
             delay(time);
             Brake();
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("SouthEast");
             delay(time);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("South");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("SouthWest");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("West");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("NorthWest");
             delay(time);
             Brake();
@@ -310,46 +333,46 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         if (!_time.Running)
         {
             time = 800;
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("North");
             delay(time);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("South * 2");
             delay(time * 2);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("North");
             delay(time);
             Brake();
 
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("East");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("West * 2");
             delay(time * 2);
             Brake();
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("East");
             delay(time);
             Brake();
@@ -359,10 +382,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case CW:
         if (!_time.Running) // If running is true ther's no need to set the motors again
         {
-            _mNorth.moving(1, speed, 0);
-            _mEast.moving(2, speed, 0);
-            _mSouth.moving(1, speed, 0);
-            _mWest.moving(2, speed, 0);
+            _mot1.moving(1, speed, 0);
+            _mot2.moving(1, speed, 0);
+            _mot3.moving(1, speed, 0);
+            _mot4.moving(1, speed, 0);
             _time.EndMicros = now + time;
             _time.Running = true;
             // deblnM("Rotating CW");
@@ -372,10 +395,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     case CCW:
         if (!_time.Running) // If running is true ther's no need to set the motors again
         {
-            _mNorth.moving(2, speed, 0);
-            _mEast.moving(1, speed, 0);
-            _mSouth.moving(2, speed, 0);
-            _mWest.moving(1, speed, 0);
+            _mot1.moving(1, speed, 0);
+            _mot2.moving(1, speed, 0);
+            _mot3.moving(1, speed, 0);
+            _mot4.moving(1, speed, 0);
             _time.EndMicros = now + time;
             _time.Running = true;
             // deblnM("Rotating CW");
@@ -384,15 +407,15 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 
     case _Brake:
 
-        _mNorth.moving(3, 255, 0);
-        _mEast.moving(3, 255, 0);
-        _mSouth.moving(3, 255, 0);
-        _mWest.moving(3, 255, 0);
+        _mot1.moving(3, 255, 0);
+        _mot2.moving(3, 255, 0);
+        _mot3.moving(3, 255, 0);
+        _mot4.moving(3, 255, 0);
         delay(speed / 1.5);
-        _mNorth.moving(0, 0, 0);
-        _mEast.moving(0, 0, 0);
-        _mSouth.moving(0, 0, 0);
-        _mWest.moving(0, 0, 0);
+        _mot1.moving(0, 0, 0);
+        _mot2.moving(0, 0, 0);
+        _mot3.moving(0, 0, 0);
+        _mot4.moving(0, 0, 0);
         break;
 
     default:
@@ -408,10 +431,10 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
             {
                 // deblnM("stop mot");
                 _time.Running = false;
-                _mNorth.moving(0, 0, 0);
-                _mEast.moving(0, 0, 0);
-                _mSouth.moving(0, 0, 0);
-                _mWest.moving(0, 0, 0);
+                _mot1.moving(0, 0, 0);
+                _mot2.moving(0, 0, 0);
+                _mot3.moving(0, 0, 0);
+                _mot4.moving(0, 0, 0);
             }
         }
         else
@@ -463,71 +486,69 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         _time.Running = false;
     }
 
-    _dir = RAD(_dir);
-
     // calc mot1
-    mot1.speed = speed * cos((_dir - _3motAng.mot1) - 90);
+    motD1.speed = speed * cos(_dir - _3motAng.mot1);
 
-    if (mot1.speed != 0)
+    if (motD1.speed != 0)
     {
-        if (mot1.speed > 0)
+        if (motD1.speed > 0)
         {
-            mot1.dir = 1;
+            motD1.dir = 1;
         }
         else
         {
-            mot1.dir = 2;
+            motD1.dir = 2;
         }
     }
     else
     {
-        mot1.dir = 0;
+        motD1.dir = 0;
     }
 
     // calc mot2
-    mot2.speed = speed * cos((_dir - _3motAng.mot2) - 90);
+    motD2.speed = speed * cos(_dir - _3motAng.mot2);
 
-    if (mot2.speed != 0)
+    if (motD2.speed != 0)
     {
-        if (mot2.speed > 0)
+        if (motD2.speed > 0)
         {
-            mot2.dir = 1;
+            motD2.dir = 1;
         }
         else
         {
-            mot2.dir = 2;
+            motD2.dir = 2;
         }
     }
     else
     {
-        mot2.dir = 0;
+        motD2.dir = 0;
     }
 
     // calc mot3
-    mot3.speed = speed * cos((_dir - _3motAng.mot3) - 90);
+    motD3.speed = speed * cos(_dir - _3motAng.mot3);
 
-    if (mot3.speed != 0)
+    if (motD3.speed != 0)
     {
-        if (mot3.speed > 0)
+        if (motD3.speed > 0)
         {
-            mot3.dir = 1;
+            motD3.dir = 1;
         }
         else
         {
-            mot3.dir = 2;
+            motD3.dir = 2;
         }
     }
     else
     {
-        mot3.dir = 0;
+        motD3.dir = 0;
     }
 
     // set all motor all at onece
     if (!_time.Running) // If running is true ther's no need to set the motors again
     {
-        _mNorth.moving(mot1.dir, mot1.speed, _correct);
-        _mEast.moving(mot2.dir, mot2.speed, _correct);
-        _mSouth.moving(mot3.dir, mot3.speed, _correct);
+        _mot1.moving(motD1.dir, motD1.speed, _correct);
+        _mot2.moving(motD2.dir, motD2.speed, _correct);
+        _mot3.moving(motD3.dir, motD3.speed, _correct);
         _time.EndMicros = now + time;
         _time.Running = true;
         deblnM("Moving");
@@ -540,9 +561,9 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         {
             // deblnM("stop mot");
             _time.Running = false;
-            _mNorth.moving(0, 0, 0);
-            _mEast.moving(0, 0, 0);
-            _mSouth.moving(0, 0, 0);
+            _mot1.moving(0, 0, 0);
+            _mot2.moving(0, 0, 0);
+            _mot3.moving(0, 0, 0);
             deblnM("Move done");
         }
     }
@@ -606,10 +627,10 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
     case 361:               // CW
         if (!_time.Running) // If running is true ther's no need to set the motors again
         {
-            _mNorth.moving(1, speed, 0);
-            _mEast.moving(2, speed, 0);
-            _mSouth.moving(1, speed, 0);
-            _mWest.moving(2, speed, 0);
+            _mot1.moving(1, speed, 0);
+            _mot2.moving(2, speed, 0);
+            _mot3.moving(1, speed, 0);
+            _mot4.moving(2, speed, 0);
             _time.EndMicros = now + time;
             _time.Running = true;
             // deblnM("Rotating CW");
@@ -619,10 +640,10 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
     case 362:               // CCW
         if (!_time.Running) // If running is true ther's no need to set the motors again
         {
-            _mNorth.moving(2, speed, 0);
-            _mEast.moving(1, speed, 0);
-            _mSouth.moving(2, speed, 0);
-            _mWest.moving(1, speed, 0);
+            _mot1.moving(2, speed, 0);
+            _mot2.moving(1, speed, 0);
+            _mot3.moving(2, speed, 0);
+            _mot4.moving(1, speed, 0);
             _time.EndMicros = now + time;
             _time.Running = true;
             // deblnM("Rotating CW");
@@ -631,15 +652,15 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
 
     case 360: //_Brake
 
-        _mNorth.moving(3, 255, 0);
-        _mEast.moving(3, 255, 0);
-        _mSouth.moving(3, 255, 0);
-        _mWest.moving(3, 255, 0);
+        _mot1.moving(3, 255, 0);
+        _mot2.moving(3, 255, 0);
+        _mot3.moving(3, 255, 0);
+        _mot4.moving(3, 255, 0);
         delay(speed / 1.5);
-        _mNorth.moving(0, 0, 0);
-        _mEast.moving(0, 0, 0);
-        _mSouth.moving(0, 0, 0);
-        _mWest.moving(0, 0, 0);
+        _mot1.moving(0, 0, 0);
+        _mot2.moving(0, 0, 0);
+        _mot3.moving(0, 0, 0);
+        _mot4.moving(0, 0, 0);
         break;
 
     case Freewheel:
@@ -647,10 +668,10 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
         {
             deblnM("stop mot");
             _time.Running = false;
-            _mNorth.moving(0, 0, 0);
-            _mEast.moving(0, 0, 0);
-            _mSouth.moving(0, 0, 0);
-            _mWest.moving(0, 0, 0);
+            _mot1.moving(0, 0, 0);
+            _mot2.moving(0, 0, 0);
+            _mot3.moving(0, 0, 0);
+            _mot4.moving(0, 0, 0);
         }
         break;
 
@@ -658,31 +679,31 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
         if (!_time.Running)
         {
             time = 1000;
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("East");
             delay(time);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("South");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("West");
             delay(time);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("North");
             delay(time);
             Brake();
@@ -693,59 +714,59 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
         if (!_time.Running)
         {
             time = 500;
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("North");
             delay(time);
             Brake();
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("NorthEast");
             delay(time);
             Brake();
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("East");
             delay(time);
             Brake();
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("SouthEast");
             delay(time);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("South");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("SouthWest");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("West");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("NorthWest");
             delay(time);
             Brake();
@@ -756,46 +777,46 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
         if (!_time.Running)
         {
             time = 800;
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("North");
             delay(time);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(1, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(2, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(1, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(2, speed, _correct);
             deblnM("South * 2");
             delay(time * 2);
             Brake();
-            _mNorth.moving(0, speed, _correct);
-            _mEast.moving(2, speed, _correct);
-            _mSouth.moving(0, speed, _correct);
-            _mWest.moving(1, speed, _correct);
+            _mot1.moving(0, speed, _correct);
+            _mot2.moving(2, speed, _correct);
+            _mot3.moving(0, speed, _correct);
+            _mot4.moving(1, speed, _correct);
             deblnM("North");
             delay(time);
             Brake();
 
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("East");
             delay(time);
             Brake();
-            _mNorth.moving(2, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(1, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(2, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(1, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("West * 2");
             delay(time * 2);
             Brake();
-            _mNorth.moving(1, speed, _correct);
-            _mEast.moving(0, speed, _correct);
-            _mSouth.moving(2, speed, _correct);
-            _mWest.moving(0, speed, _correct);
+            _mot1.moving(1, speed, _correct);
+            _mot2.moving(0, speed, _correct);
+            _mot3.moving(2, speed, _correct);
+            _mot4.moving(0, speed, _correct);
             deblnM("East");
             delay(time);
             Brake();
@@ -806,87 +827,87 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
         _dir = RAD(_dir);
 
         // calc mot1
-        mot1.speed = speed * cos((_dir - _4motAng.mot1) - 90);
+        motD1.speed = speed * cos((_dir - _4motAng.mot1) - 90);
 
-        if (mot1.speed != 0)
+        if (motD1.speed != 0)
         {
-            if (mot1.speed > 0)
+            if (motD1.speed > 0)
             {
-                mot1.dir = 1;
+                motD1.dir = 1;
             }
             else
             {
-                mot1.dir = 2;
+                motD1.dir = 2;
             }
         }
         else
         {
-            mot1.dir = 0;
+            motD1.dir = 0;
         }
 
         // calc mot2
-        mot2.speed = speed * cos((_dir - _4motAng.mot2) - 90);
+        motD2.speed = speed * cos((_dir - _4motAng.mot2) - 90);
 
-        if (mot2.speed != 0)
+        if (motD2.speed != 0)
         {
-            if (mot2.speed > 0)
+            if (motD2.speed > 0)
             {
-                mot2.dir = 1;
+                motD2.dir = 1;
             }
             else
             {
-                mot2.dir = 2;
+                motD2.dir = 2;
             }
         }
         else
         {
-            mot2.dir = 0;
+            motD2.dir = 0;
         }
 
         // calc mot3
-        mot3.speed = speed * cos((_dir - _4motAng.mot3) - 90);
+        motD3.speed = speed * cos((_dir - _4motAng.mot3) - 90);
 
-        if (mot3.speed != 0)
+        if (motD3.speed != 0)
         {
-            if (mot3.speed > 0)
+            if (motD3.speed > 0)
             {
-                mot3.dir = 1;
+                motD3.dir = 1;
             }
             else
             {
-                mot3.dir = 2;
+                motD3.dir = 2;
             }
         }
         else
         {
-            mot3.dir = 0;
+            motD3.dir = 0;
         }
 
         // calc mot4
-        mot4.speed = speed * cos((_dir - _4motAng.mot4) - 90);
+        motD4.speed = speed * cos((_dir - _4motAng.mot4) - 90);
 
-        if (mot4.speed != 0)
+        if (motD4.speed != 0)
         {
-            if (mot4.speed > 0)
+            if (motD4.speed > 0)
             {
-                mot4.dir = 1;
+                motD4.dir = 1;
             }
             else
             {
-                mot4.dir = 2;
+                motD4.dir = 2;
             }
         }
         else
         {
-            mot4.dir = 0;
+            motD4.dir = 0;
         }
 
         // set all motor all at onece
         if (!_time.Running) // If running is true ther's no need to set the motors again
         {
-            _mNorth.moving(mot1.dir, mot1.speed, _correct);
-            _mEast.moving(mot2.dir, mot2.speed, _correct);
-            _mSouth.moving(mot3.dir, mot3.speed, _correct);
+            _mot1.moving(motD1.dir, motD1.speed, _correct);
+            _mot2.moving(motD2.dir, motD2.speed, _correct);
+            _mot3.moving(motD3.dir, motD3.speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             deblnM("Moving");
@@ -899,9 +920,9 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
             {
                 // deblnM("stop mot");
                 _time.Running = false;
-                _mNorth.moving(0, 0, 0);
-                _mEast.moving(0, 0, 0);
-                _mSouth.moving(0, 0, 0);
+                _mot1.moving(0, 0, 0);
+                _mot2.moving(0, 0, 0);
+                _mot3.moving(0, 0, 0);
                 deblnM("Move done");
             }
         }
@@ -917,7 +938,9 @@ void Move::Tare(unsigned int duration)
 {
     // uint8_t buflog[50];
 
-    Dir(CW, 80, duration + 100, millis());
+    Dir(CW, 200, duration + 100, millis());
+    delay(100);
+    Dir(CW, 100, duration + 100, millis());
     compass._tare(duration);
     Dir(_Brake, 255, 0, millis());
 }
@@ -942,4 +965,9 @@ void Move::Angle_Correction()
 double Move::RAD(int _deg)
 {
     return (_deg * (3.14159265359 / 180));
+}
+
+int Map(double x, double in_min, double in_max, double out_min, double out_max)
+{
+  return (int)(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

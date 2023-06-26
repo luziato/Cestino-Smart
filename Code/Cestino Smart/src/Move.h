@@ -12,17 +12,17 @@ class Move
 {
 
 private:
-    Motor _mNorth;
-    Motor _mEast;
-    Motor _mSouth;
-    Motor _mWest;
+    Motor _mot1;
+    Motor _mot2;
+    Motor _mot3;
+    Motor _mot4;
 
     typedef struct
     {
         int mot1 = 0;
         int mot2 = 120;
-        int mot3 = 240;
-        
+        int mot3 = -120;
+
     } _3MotAng;
 
     _3MotAng _3motAng;
@@ -33,44 +33,39 @@ private:
         int mot2 = 90;
         int mot3 = 180;
         int mot4 = 270;
-        
+
     } _4MotAng;
 
     _4MotAng _4motAng;
 
-    
-        
+    typedef struct // mot1 data
+    {
+        int dir;
+        int speed;
+    } MotD1;
 
     typedef struct // mot1 data
     {
         int dir;
         int speed;
-    } Mot1;
+    } MotD2;
 
     typedef struct // mot1 data
     {
         int dir;
         int speed;
-    } Mot2;
+    } MotD3;
 
     typedef struct // mot1 data
     {
         int dir;
         int speed;
-    } Mot3;
+    } MotD4;
 
-    typedef struct // mot1 data
-    {
-        int dir;
-        int speed;
-    } Mot4;
-
-    Mot1 mot1;
-    Mot2 mot2;
-    Mot3 mot3;
-    Mot4 mot4;
-
-    double RAD(int _deg); // convert Degrees to Radiants
+    MotD1 motD1;
+    MotD2 motD2;
+    MotD3 motD3;
+    MotD4 motD4;
 
     //******* FOR FUTURE USE*********
 
@@ -111,6 +106,19 @@ private:
         _Brake
     };
 
+    //************UTILS**********
+    /**
+     * @brief Map the Data value window to another window
+     *
+     * @param x New data to map
+     * @param in_min Initial data minimum
+     * @param in_max Initial data maximum
+     * @param out_min New data minimum
+     * @param out_max New data maximum
+     */
+    int Map(double x, double in_min, double in_max, double out_min, double out_max);
+    double RAD(int _deg); // convert Degrees to Radiants
+
 public:
     Move();
     ~Move();
@@ -149,6 +157,7 @@ public:
     void Brake();
     void Tare(unsigned int duration);
     void Angle_Correction();
+    void test();
 };
 
 #endif
