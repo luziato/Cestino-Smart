@@ -39,7 +39,6 @@ void Move::test()
     _mot4.moving(1, 255, 0);
     delay(500);
     KILL();
-
 }
 
 void Move::KILL()
@@ -486,90 +485,145 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         _time.Running = false;
     }
 
-    // calc mot1
-    motD1.speed = speed * cos(_dir - _3motAng.mot1);
-
-    if (motD1.speed != 0)
+    if (dir > 0 && dir <= 360)
     {
-        if (motD1.speed > 0)
+
+        // calc mot1
+        motD1.speed = speed * cos(_dir - _3motAng.mot1);
+
+        if (motD1.speed != 0)
         {
-            motD1.dir = 1;
+            if (motD1.speed > 0)
+            {
+                motD1.dir = 1;
+            }
+            else
+            {
+                motD1.dir = 2;
+            }
         }
         else
         {
-            motD1.dir = 2;
+            motD1.dir = 0;
         }
-    }
-    else
-    {
-        motD1.dir = 0;
-    }
 
-    // calc mot2
-    motD2.speed = speed * cos(_dir - _3motAng.mot2);
+        // calc mot2
+        motD2.speed = speed * cos(_dir - _3motAng.mot2);
 
-    if (motD2.speed != 0)
-    {
-        if (motD2.speed > 0)
+        if (motD2.speed != 0)
         {
-            motD2.dir = 1;
-        }
-        else
-        {
-            motD2.dir = 2;
-        }
-    }
-    else
-    {
-        motD2.dir = 0;
-    }
-
-    // calc mot3
-    motD3.speed = speed * cos(_dir - _3motAng.mot3);
-
-    if (motD3.speed != 0)
-    {
-        if (motD3.speed > 0)
-        {
-            motD3.dir = 1;
+            if (motD2.speed > 0)
+            {
+                motD2.dir = 1;
+            }
+            else
+            {
+                motD2.dir = 2;
+            }
         }
         else
         {
-            motD3.dir = 2;
+            motD2.dir = 0;
+        }
+
+        // calc mot3
+        motD3.speed = speed * cos(_dir - _3motAng.mot3);
+
+        if (motD3.speed != 0)
+        {
+            if (motD3.speed > 0)
+            {
+                motD3.dir = 1;
+            }
+            else
+            {
+                motD3.dir = 2;
+            }
+        }
+        else
+        {
+            motD3.dir = 0;
+        }
+
+        // set all motor all at onece
+        if (!_time.Running) // If running is true ther's no need to set the motors again
+        {
+            _mot1.moving(motD1.dir, motD1.speed, _correct);
+            _mot2.moving(motD2.dir, motD2.speed, _correct);
+            _mot3.moving(motD3.dir, motD3.speed, _correct);
+            _time.EndMicros = now + time;
+            _time.Running = true;
+            deblnM("Moving");
         }
     }
-    else
+    switch (_dir)
     {
-        motD3.dir = 0;
-    }
-
-    // set all motor all at onece
-    if (!_time.Running) // If running is true ther's no need to set the motors again
-    {
-        _mot1.moving(motD1.dir, motD1.speed, _correct);
-        _mot2.moving(motD2.dir, motD2.speed, _correct);
-        _mot3.moving(motD3.dir, motD3.speed, _correct);
-        _time.EndMicros = now + time;
-        _time.Running = true;
-        deblnM("Moving");
-    }
-
-    if (_time.Running)
-    {
-
-        if (now > _time.EndMicros) // checking if the motor need to stop (freeWheel)
+    case 361:               // CW
+        if (!_time.Running) // If running is true ther's no need to set the motors again
         {
-            // deblnM("stop mot");
+            _mot1.moving(1, speed, 0);
+            _mot2.moving(1, speed, 0);
+            _mot3.moving(1, speed, 0);
+            _time.EndMicros = now + time;
+            _time.Running = true;
+            // deblnM("Rotating CW");
+        }
+        break;
+
+    case 362:               // CCW
+        if (!_time.Running) // If running is true ther's no need to set the motors again
+        {
+            _mot1.moving(2, speed, 0);
+            _mot2.moving(2, speed, 0);
+            _mot3.moving(2, speed, 0);
+            _time.EndMicros = now + time;
+            _time.Running = true;
+            // deblnM("Rotating CW");
+        }
+        break;
+
+    case 360: //_Brake
+
+        _mot1.moving(3, 255, 0);
+        _mot2.moving(3, 255, 0);
+        _mot3.moving(3, 255, 0);
+        delay(speed / 1.5);
+        _mot1.moving(0, 0, 0);
+        _mot2.moving(0, 0, 0);
+        _mot3.moving(0, 0, 0);
+        break;
+
+    case Freewheel:
+        if (!_time.Running)
+        {
+            deblnM("stop mot");
             _time.Running = false;
             _mot1.moving(0, 0, 0);
             _mot2.moving(0, 0, 0);
             _mot3.moving(0, 0, 0);
-            deblnM("Move done");
         }
-    }
-    else
-    {
-        Angle_Correction();
+        break;
+
+    default:
+
+        if (_time.Running)
+        {
+
+            if (now > _time.EndMicros) // checking if the motor need to stop (freeWheel)
+            {
+                // deblnM("stop mot");
+                _time.Running = false;
+                _mot1.moving(0, 0, 0);
+                _mot2.moving(0, 0, 0);
+                _mot3.moving(0, 0, 0);
+                deblnM("Move done");
+            }
+        }
+        else
+        {
+            Angle_Correction();
+        }
+        break;
     }
 }
 
@@ -824,7 +878,6 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
         break;
 
     default:
-        _dir = RAD(_dir);
 
         // calc mot1
         motD1.speed = speed * cos((_dir - _4motAng.mot1) - 90);
@@ -940,7 +993,7 @@ void Move::Tare(unsigned int duration)
 
     Dir(CW, 200, duration + 100, millis());
     delay(100);
-    Dir(CW, 100, duration + 100, millis());
+    Dir(CW, 110, duration + 100, millis());
     compass._tare(duration);
     Dir(_Brake, 255, 0, millis());
 }
@@ -953,11 +1006,11 @@ void Move::Angle_Correction()
     {
         if (correct > 0)
         {
-            Dir(CW, 130 + abs(correct), 1 * 1000, micros());
+            Dir3(361, 160 + abs(correct), 3 * 1000, micros());      //CW
         }
         else
         {
-            Dir(CCW, 130 + abs(correct), 1 * 1000, micros());
+            Dir3(362, 160 + abs(correct), 3 * 1000, micros());      //CCW
         }
     }
 }
@@ -969,5 +1022,5 @@ double Move::RAD(int _deg)
 
 int Map(double x, double in_min, double in_max, double out_min, double out_max)
 {
-  return (int)(x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

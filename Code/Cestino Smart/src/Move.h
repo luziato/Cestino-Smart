@@ -32,7 +32,7 @@ private:
         int mot1 = 0;
         int mot2 = 90;
         int mot3 = 180;
-        int mot4 = 270;
+        int mot4 = -90;
 
     } _4MotAng;
 
@@ -158,6 +158,7 @@ public:
     void Tare(unsigned int duration);
     void Angle_Correction();
     void test();
+
 };
 
 #endif
