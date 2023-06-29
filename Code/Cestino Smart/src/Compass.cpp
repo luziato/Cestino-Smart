@@ -105,7 +105,7 @@ int Compass::GetAngle()
     int _val = JY901.stcMag.h[1];
     // Roll[0] / 32768.0f * 180.0f;
 
-    return map(_val, value.min, value.max, 0, 359);
+    return map(_val, value.min, value.max, 1, 360);
 }
 
 int Compass::GetAngleRAW(void)

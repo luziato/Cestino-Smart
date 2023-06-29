@@ -21,7 +21,7 @@ private:
     {
         int mot1 = 0;
         int mot2 = 120;
-        int mot3 = -120;
+        int mot3 = 240;
 
     } _3MotAng;
 
@@ -156,7 +156,7 @@ public:
     void KILL();
     void Brake();
     void Tare(unsigned int duration);
-    void Angle_Correction();
+    void Angle_Correction3();
     void test();
 
 };

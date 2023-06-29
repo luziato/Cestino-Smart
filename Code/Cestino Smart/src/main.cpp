@@ -9,6 +9,8 @@
 #include "Move.h"
 #include "_UDP.h"
 
+
+
 Move MoveTo;
 
 Compass compass;
@@ -19,7 +21,13 @@ int UDPtime;
 
 void setup()
 {
+    delay(3000);
     Serial.begin(115200);
+    waitForSerial;
+    
+    Serial.println("ciao");
+
+    MoveTo.test();
 
     UDPsetup();
 

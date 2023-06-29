@@ -1,0 +1,103 @@
+#include "Arduino.h"
+
+#define p(x) Serial.print(x);
+#define pl(x) Serial.println(x);
+
+int serialData();
+int calcMot(int _dir, int _mot);
+
+int speed[3];
+int ang[3] = {0, 120, 240};
+
+void setup()
+{
+    Serial.begin(9600);
+    while (!Serial)
+    {
+    }
+    pl("Ciao");
+    for (int j = 1; j < 361; j++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            // p("mot");
+            // p(i);
+            // p(":");
+            p(calcMot(j, i));
+            p(";");
+        }
+        pl();
+    }
+}
+
+void loop()
+{
+    /*if (Serial.available() > 0)
+    {
+        int _data = Serial.parseInt(SKIP_WHITESPACE);
+        //Serial.print("data: ");
+        Serial.print(_data);
+        p(";");
+        while (Serial.available() > 0)
+        {
+            Serial.read();
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            //p("mot");
+            //p(i);
+            //p(":");
+            p(calcMot(_data, i));
+            p(";");
+        }
+    }
+
+    // p("ang:");
+    // pl(ang);
+
+    for (int j = 1; j < 361; j++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            // p("mot");
+            // p(i);
+            // p(":");
+            p(calcMot(j, i));
+            p(";");
+        }
+        pl();
+    }*/
+}
+
+int serialData()
+{
+    if (Serial.available() > 0)
+    {
+        int _data = Serial.parseInt(SKIP_WHITESPACE);
+        Serial.print("data: ");
+        Serial.println(_data);
+        while (Serial.available() > 0)
+        {
+            Serial.read();
+        }
+    }
+    return 0;
+}
+
+int calcMot(int _dir, int _mot)
+{
+    int val;
+    if (_dir > 0 && _dir <= 360)
+    {
+
+        // calc mot1
+        val = 255 * cos(DEG_TO_RAD*(_dir - ang[_mot]));
+        return val;
+        
+    }
+    else
+    {
+        return 0;
+    }
+}

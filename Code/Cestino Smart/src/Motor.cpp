@@ -48,13 +48,13 @@ void Motor::moving(int dir, int pwm, int correction)
     case 1:
         /* CW */
 
-        if (pwm + correction > 255)
+        if (pwm + _correction > 255)
         {
             pwmCorrect = 255;
         }
         else
         {
-            pwmCorrect = pwm + correction;
+            pwmCorrect = pwm + (_correction*2);
         }
 
         analogWrite(_enable, pwmCorrect); //  Setting speed
@@ -74,7 +74,7 @@ void Motor::moving(int dir, int pwm, int correction)
         }
         else
         {
-            pwmCorrect = pwm + _correction;
+            pwmCorrect = pwm + (_correction*2);
         }
 
         analogWrite(_enable, pwmCorrect); //  Setting speed

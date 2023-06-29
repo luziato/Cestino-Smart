@@ -21,7 +21,21 @@ Move::~Move() {}
 
 void Move::test()
 {
-    _mot1.moving(1, 255, 0);
+    for (int i = 0; i < 1024; i++)
+    {
+        _mot2.moving(2, i, 0);
+        delay(300);
+        deblnM(i);
+    }
+
+    while (true)
+    {
+        deblnM("Ended...");
+        delay(1000);
+    }
+    
+
+    /*_mot1.moving(1, 255, 0);
     delay(2000);
     KILL();
     _mot2.moving(1, 255, 0);
@@ -38,7 +52,7 @@ void Move::test()
     _mot3.moving(1, 255, 0);
     _mot4.moving(1, 255, 0);
     delay(500);
-    KILL();
+    KILL();*/
 }
 
 void Move::KILL()
@@ -438,7 +452,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
         }
         else
         {
-            Angle_Correction();
+            Angle_Correction3();
         }
 
         break;
@@ -459,7 +473,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         // UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
     }*/
 
-    debM1("Dir:");
+    /*debM1("Dir:");
     debM1(dir);
     debM1(",S:");
     debM1(speed / 2);
@@ -471,7 +485,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
     debM1(_correct);
     // debM1(" micros: ");
     // debM1(now);
-    deblnM1(" .");
+    deblnM1(" .");*/
 
     _time.time = time;
 
@@ -489,7 +503,10 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
     {
 
         // calc mot1
-        motD1.speed = speed * cos(_dir - _3motAng.mot1);
+        motD1.speed = speed * cos(DEG_TO_RAD * (_dir - _3motAng.mot1));
+        debM("mot1:");
+        debM(motD1.speed);
+        debM(";");
 
         if (motD1.speed != 0)
         {
@@ -508,7 +525,10 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         }
 
         // calc mot2
-        motD2.speed = speed * cos(_dir - _3motAng.mot2);
+        motD2.speed = speed * cos(DEG_TO_RAD * (_dir - _3motAng.mot2));
+        debM("mot2:");
+        debM(motD2.speed);
+        debM(";");
 
         if (motD2.speed != 0)
         {
@@ -527,7 +547,9 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         }
 
         // calc mot3
-        motD3.speed = speed * cos(_dir - _3motAng.mot3);
+        motD3.speed = speed * cos(DEG_TO_RAD * (_dir - _3motAng.mot3));
+        debM("mot3:");
+        deblnM(motD3.speed);
 
         if (motD3.speed != 0)
         {
@@ -553,7 +575,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
             _mot3.moving(motD3.dir, motD3.speed, _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
-            deblnM("Moving");
+            // deblnM("Moving");
         }
     }
     switch (_dir)
@@ -616,12 +638,12 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
                 _mot1.moving(0, 0, 0);
                 _mot2.moving(0, 0, 0);
                 _mot3.moving(0, 0, 0);
-                deblnM("Move done");
+                // deblnM("Move done");
             }
         }
         else
         {
-            Angle_Correction();
+            Angle_Correction3();
         }
         break;
     }
@@ -981,7 +1003,7 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
         }
         else
         {
-            Angle_Correction();
+            Angle_Correction3();
         }
         break;
     }
@@ -998,7 +1020,7 @@ void Move::Tare(unsigned int duration)
     Dir(_Brake, 255, 0, millis());
 }
 
-void Move::Angle_Correction()
+void Move::Angle_Correction3()
 {
     int correct = compass.Correct();
 
@@ -1006,11 +1028,11 @@ void Move::Angle_Correction()
     {
         if (correct > 0)
         {
-            Dir3(361, 160 + abs(correct), 3 * 1000, micros());      //CW
+            Dir3(361, 160 + abs(correct), 3 * 1000, micros()); // CW
         }
         else
         {
-            Dir3(362, 160 + abs(correct), 3 * 1000, micros());      //CCW
+            Dir3(362, 160 + abs(correct), 3 * 1000, micros()); // CCW
         }
     }
 }
@@ -1024,3 +1046,5 @@ int Map(double x, double in_min, double in_max, double out_min, double out_max)
 {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
+
+// void setSingleMot();
