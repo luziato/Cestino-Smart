@@ -10,6 +10,7 @@ private:
     int _dir1;
     int _dir2;
     int _enable;
+    int _pwmCut = 160;
 
 public:
 

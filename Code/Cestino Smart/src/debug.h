@@ -7,7 +7,7 @@
         #define DEBUG_COMPASS 1
         #define DEBUG_UDP 1
         #define DEBUG_MOVE 1
-            #define DEBUG_MOVE1 0
+            #define DEBUG_MOVE1 1
             #define DEBUG_MOVEA 0
 /***************************************/
 
@@ -23,7 +23,7 @@
         //Debbugger for Compass
         #if DEBUG_COMPASS == 1
             #define debC(x) Serial.print(x)
-            #define deblnC(x) Serial.print(x)
+            #define deblnC(x) Serial.println(x)
         #else
             #define debC(x)
             #define deblnC(x)

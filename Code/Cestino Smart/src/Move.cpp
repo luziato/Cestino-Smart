@@ -9,6 +9,7 @@ extern Compass compass;
 
 int trigger = A0;
 
+
 Move::Move()
 {
     _mot1.begin(NORTH_DIR1, NORTH_DIR2, NORTH_ENABLE);
@@ -33,7 +34,6 @@ void Move::test()
         deblnM("Ended...");
         delay(1000);
     }
-    
 
     /*_mot1.moving(1, 255, 0);
     delay(2000);
@@ -465,7 +465,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
 
     _dir = dir;
 
-    int _correct = compass.Correct();
+    int _correct = 0; //compass.Correct();
 
     /*if (dir != 0)
     {
@@ -473,7 +473,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         // UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
     }*/
 
-    /*debM1("Dir:");
+    debM1("Dir:");
     debM1(dir);
     debM1(",S:");
     debM1(speed / 2);
@@ -485,7 +485,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
     debM1(_correct);
     // debM1(" micros: ");
     // debM1(now);
-    deblnM1(" .");*/
+    deblnM1(" .");
 
     _time.time = time;
 
@@ -570,9 +570,9 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         // set all motor all at onece
         if (!_time.Running) // If running is true ther's no need to set the motors again
         {
-            _mot1.moving(motD1.dir, motD1.speed, _correct);
-            _mot2.moving(motD2.dir, motD2.speed, _correct);
-            _mot3.moving(motD3.dir, motD3.speed, _correct);
+            _mot1.moving(motD1.dir, abs(motD1.speed), _correct);
+            _mot2.moving(motD2.dir, abs(motD2.speed), _correct);
+            _mot3.moving(motD3.dir, abs(motD3.speed), _correct);
             _time.EndMicros = now + time;
             _time.Running = true;
             // deblnM("Moving");
@@ -1013,9 +1013,9 @@ void Move::Tare(unsigned int duration)
 {
     // uint8_t buflog[50];
 
-    Dir(CW, 200, duration + 100, millis());
+    Dir3(361, 200, duration + 100, millis());       // rotate CW(361)
     delay(100);
-    Dir(CW, 110, duration + 100, millis());
+    Dir3(361, 110, duration + 100, millis());
     compass._tare(duration);
     Dir(_Brake, 255, 0, millis());
 }
@@ -1046,5 +1046,3 @@ int Map(double x, double in_min, double in_max, double out_min, double out_max)
 {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
-// void setSingleMot();

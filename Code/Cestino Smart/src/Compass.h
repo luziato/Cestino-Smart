@@ -37,8 +37,8 @@ public:
     int GetAngle();
     int GetAngleRAW(void);
     int GetAllAngleRAW(bool _prop, int _axis);
-    //int CorrectDir();
     int Correct();
+    void PIDvalue(int _p, int _i, int _d);
 };
 
 #endif

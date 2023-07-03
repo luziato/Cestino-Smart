@@ -8,8 +8,7 @@
 #include "const.h"
 #include "Move.h"
 #include "_UDP.h"
-
-
+#include "Compass.h"
 
 Move MoveTo;
 
@@ -22,19 +21,20 @@ int UDPtime;
 void setup()
 {
     delay(3000);
-    Serial.begin(115200);
-    waitForSerial;
+    Serial.begin(9600);
+    
+    //waitForSerial;        //ON/OFF SERIAL
     
     Serial.println("ciao");
 
-    MoveTo.test();
+    //MoveTo.test();
 
     UDPsetup();
 
     // Bussola
     compass.Begin();
 
-    MoveTo.Tare(6000);
+    MoveTo.Tare(4000);
 
     debln("setup completed");
 
