@@ -57,6 +57,12 @@ void Motor::moving(int dir, int pwm, int correction)
             pwmCorrect = pwm + (_correction*2);
         }
 
+        if (pwmCorrect<_pwmCut)
+        {
+            pwmCorrect = 0;
+        }
+        
+
         analogWrite(_enable, pwmCorrect); //  Setting speed
 
         digitalWrite(_dir1, HIGH); //  Setting direction
@@ -75,6 +81,11 @@ void Motor::moving(int dir, int pwm, int correction)
         else
         {
             pwmCorrect = pwm + (_correction*2);
+        }
+
+        if (pwmCorrect<_pwmCut)
+        {
+            pwmCorrect = 0;
         }
 
         analogWrite(_enable, pwmCorrect); //  Setting speed

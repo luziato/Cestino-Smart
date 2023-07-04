@@ -158,7 +158,6 @@ public:
     void Tare(unsigned int duration);
     void Angle_Correction3();
     void test();
-
 };
 
 #endif

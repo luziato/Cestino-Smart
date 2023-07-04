@@ -2,7 +2,6 @@
 #include "Compass.h"
 #include "_UDP.h"
 
-
 /*********DEBUGGER************/
 #include "debug.h"
 /*****************************/
@@ -10,10 +9,10 @@
 ArduPID Controller;
 
 // Arbitrary setpoint and gains - adjust these as fit for your project:
-    double setpoint = 180;
-    double p = 1;
-    double i = 1;
-    double d = 1.1;
+double setpoint = 180;
+double p = 0.375;
+double i = 0.2;   //1
+double d = 10;   //3
 
 Compass::Compass() {}
 Compass::~Compass() {}
@@ -21,8 +20,6 @@ Compass::~Compass() {}
 void Compass::Begin()
 {
     JY901.StartIIC();
-
-    
 
     Controller.begin(&input, &output, &setpoint, p, i, d);
     Controller.setOutputLimits(0, 512);
@@ -73,18 +70,18 @@ void Compass::_tare(unsigned int _duration)
 
         value.max = max(_sensorValue, value.max);
         value.min = min(_sensorValue, value.min);
-        /*
+        ///*
         debC("min:");
-        deblnC(value.min);
+        debC(value.min);
         debC(" MAX:");
         deblnC(value.max);
-        */
+        //*/
 
         delay(6);
     }
     setForcedNord();
     Vnord = 180;
-    
+
     debC("Tare ended, min val: ");
     debC(value.min);
     debC(" MAX: ");
@@ -171,4 +168,12 @@ int Compass::Correct()
     output = output - Bias;
 
     return output;
+}
+
+void Compass::PIDvalue(int _p, int _i, int _d)
+{
+    p = _p;
+    i = _i;
+    d = _d;
+    
 }
