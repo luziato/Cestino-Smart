@@ -79,8 +79,8 @@ void Compass::_tare(unsigned int _duration)
 
         delay(6);
     }
-    //setForcedNord();
-    Vnord = 135;
+    setForcedNord();
+    Vnord = 180;
 
     debC("Tare ended, min val: ");
     debC(value.min);
@@ -173,13 +173,13 @@ int Compass::Correct()
 
     // output = output - Bias;
 
-    input = input - offset;
+    //input = input - offset;
 
     input = map(input, 0, 360, -255, 255);
 
     if (input < 80 && input > -80)
     {
-        output = input * -0.2;
+        output = input * -0.3;
     }
     else
     {

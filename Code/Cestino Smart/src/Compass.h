@@ -33,8 +33,8 @@ public:
     Compass();
     ~Compass();
 
-    int Vnord = 135;
-    int offset = 135;
+    int Vnord = 180;
+    int offset = 180;
 
     void Begin();
     int GetNord(void);

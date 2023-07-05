@@ -20,7 +20,7 @@ int UDPtime;
 
 void setup()
 {
-    delay(3000);
+    delay(2000);
     Serial.begin(9600);
     
     //waitForSerial;        //ON/OFF SERIAL
@@ -49,7 +49,7 @@ void loop()
 
     MoveTo.Dir3(UDPdir, UDPspeed, UDPtime * 1000, micros());
 
-    UDPdir = 0;
+    //UDPdir = 0;
     UDPspeed = 0;
     UDPtime = 0;
 

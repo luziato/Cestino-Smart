@@ -19,9 +19,9 @@ private:
 
     typedef struct
     {
-        int mot1 = 0;
-        int mot2 = 120;
-        int mot3 = 240;
+        int mot1 = 270;
+        int mot2 = 30;
+        int mot3 = 150;
 
     } _3MotAng;
 

@@ -3,11 +3,11 @@
 
 
 /*****************_SET_*****************/
-    #define DEBUG 0
-        #define DEBUG_COMPASS 1
-        #define DEBUG_UDP 1
+    #define DEBUG 1
+        #define DEBUG_COMPASS 0
+        #define DEBUG_UDP 0
         #define DEBUG_MOVE 1
-            #define DEBUG_MOVE1 1
+            #define DEBUG_MOVE1 0
             #define DEBUG_MOVEA 0
 /***************************************/
 
