@@ -1,0 +1,98 @@
+#include <Arduino.h>
+
+/*********DEBUGGER************/
+#include "debug.h"
+/*****************************/
+
+// Self-Made
+#include "const.h"
+#include "Move.h"
+#include "_UDP.h"
+#include "Compass.h"
+#include "FireTimer.h"
+
+Move MoveTo;
+
+Compass compass;
+
+FireTimer printTimer;
+FireTimer PosTimer;
+
+int UDPdir;
+int UDPspeed;
+int UDPtime;
+
+int s = 0;
+int posCounter = 0;
+
+/*int s1 = 135;
+int s2 = 255;
+int s3 = 90;
+int s4 = 270;
+*/
+
+int pos[5] = {0, -45, 0, 45, 0};
+int poss[5] = {0, -90, 0, 90, 0};
+
+void print();
+void steps();
+
+void setup()
+{
+    delay(3000);
+    Serial.begin(9600);
+
+    waitForSerial; // ON/OFF WAIT FOR SERIAL
+    compass.test();
+
+    // Bussola
+    compass.Begin();
+
+    MoveTo.Tare(4000);
+
+    // waitForSerial; // ON/OFF WAIT FOR SERIAL
+    printTimer.begin(10);
+    PosTimer.begin(5000);
+
+    debln("setup completed");
+}
+
+void loop()
+{
+
+    // steps();
+
+    MoveTo.Dir3(UDPdir, UDPspeed, UDPtime * 1000, micros());
+
+    print();
+}
+
+void steps()
+{
+    if (PosTimer.fire())
+    {
+
+        compass.setAngle(pos[posCounter]);
+        s = poss[posCounter];
+        // Serial.println(s);
+        posCounter++;
+        if (posCounter >= 5)
+        {
+            while (true)
+            {
+            }
+        }
+    }
+}
+
+void print()
+{
+    if (printTimer.fire())
+    {
+        Serial.print(millis());
+        Serial.print(";");
+        Serial.print(180 + s);
+        Serial.print(";");
+        Serial.println(compass.GetAllAngleRAW(true, 1));
+    }
+}

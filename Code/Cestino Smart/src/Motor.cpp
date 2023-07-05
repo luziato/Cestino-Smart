@@ -54,13 +54,13 @@ void Motor::moving(int dir, int pwm, int correction)
         }
         else
         {
-            pwmCorrect = pwm + (_correction*2);
+            pwmCorrect = pwm + _correction;
         }
 
-        if (pwmCorrect<_pwmCut)
+        /*if (pwmCorrect<_pwmCut)
         {
             pwmCorrect = 0;
-        }
+        }*/
         
 
         analogWrite(_enable, pwmCorrect); //  Setting speed
@@ -83,10 +83,10 @@ void Motor::moving(int dir, int pwm, int correction)
             pwmCorrect = pwm + (_correction*2);
         }
 
-        if (pwmCorrect<_pwmCut)
+        /*if (pwmCorrect<_pwmCut)
         {
             pwmCorrect = 0;
-        }
+        }*/
 
         analogWrite(_enable, pwmCorrect); //  Setting speed
 

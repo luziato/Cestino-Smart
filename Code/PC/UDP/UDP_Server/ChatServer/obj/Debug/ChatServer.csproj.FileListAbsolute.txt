@@ -27,3 +27,13 @@ C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Debug\ChatSe
 C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Debug\ChatServer.csproj.CoreCompileInputs.cache
 C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Debug\ChatServer.exe
 C:\Users\Utente\Documents\UDP\udp_comm\PC-ChatServer\ChatServer\obj\Debug\ChatServer.pdb
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\bin\Debug\ChatServer.exe.config
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\bin\Debug\ChatServer.exe
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\bin\Debug\ChatServer.pdb
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\obj\Debug\ChatServer.csproj.AssemblyReference.cache
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\obj\Debug\ChatServer.Properties.Resources.resources
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\obj\Debug\ChatServer.Server.resources
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\obj\Debug\ChatServer.csproj.GenerateResource.cache
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\obj\Debug\ChatServer.csproj.CoreCompileInputs.cache
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\obj\Debug\ChatServer.exe
+C:\Users\Matteo\Documents\Cestino-Smart\Code\PC\UDP\UDP_Server\ChatServer\obj\Debug\ChatServer.pdb

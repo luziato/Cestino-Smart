@@ -3,7 +3,7 @@
 
 
 /*****************_SET_*****************/
-    #define DEBUG 1
+    #define DEBUG 0
         #define DEBUG_COMPASS 1
         #define DEBUG_UDP 1
         #define DEBUG_MOVE 1
@@ -12,10 +12,10 @@
 /***************************************/
 
 
+    #define waitForSerial while(!Serial){} //wait for Serial port to open
 
 
     #if DEBUG
-     #define waitForSerial while(!Serial){} //wait for Serial port to open
      // General debugging
      #define deb(x) Serial.print(x)
      #define debln(x) Serial.println(x)

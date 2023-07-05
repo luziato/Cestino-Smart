@@ -465,7 +465,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
 
     _dir = dir;
 
-    int _correct = 0; //compass.Correct();
+    int _correct = compass.Correct();
 
     /*if (dir != 0)
     {
@@ -1015,7 +1015,7 @@ void Move::Tare(unsigned int duration)
 
     Dir3(361, 200, duration + 100, millis());       // rotate CW(361)
     delay(100);
-    Dir3(361, 110, duration + 100, millis());
+    Dir3(361, 90, duration + 100, millis());
     compass._tare(duration);
     Dir(_Brake, 255, 0, millis());
 }

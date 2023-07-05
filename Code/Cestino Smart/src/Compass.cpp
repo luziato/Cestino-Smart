@@ -11,8 +11,8 @@ ArduPID Controller;
 // Arbitrary setpoint and gains - adjust these as fit for your project:
 double setpoint = 180;
 double p = 0.375;
-double i = 0.2;   //1
-double d = 10;   //3
+double i = 0.2; // 1
+double d = 10;  // 3
 
 Compass::Compass() {}
 Compass::~Compass() {}
@@ -79,8 +79,8 @@ void Compass::_tare(unsigned int _duration)
 
         delay(6);
     }
-    setForcedNord();
-    Vnord = 180;
+    //setForcedNord();
+    Vnord = 135;
 
     debC("Tare ended, min val: ");
     debC(value.min);
@@ -93,6 +93,12 @@ void Compass::_tare(unsigned int _duration)
 int Compass::GetNord(void)
 {
     return Vnord;
+}
+
+void Compass::setAngle(int _angle)
+{
+    offset = Vnord + _angle;
+
 }
 
 int Compass::GetAngle()
@@ -119,7 +125,7 @@ int Compass::GetAllAngleRAW(bool _prop, int _axis)
     {
         JY901.GetMag();
 
-        short _data = map(JY901.stcMag.h[_axis], value.min, value.max, 0, 359);
+        short _data = map(JY901.stcMag.h[_axis], value.min, value.max, 1, 360);
         return _data;
     }
     else
@@ -163,9 +169,24 @@ int Compass::Correct()
 
     input = GetAllAngleRAW(true, 1); // Replace with sensor feedback
 
-    Controller.compute();
+    // Controller.compute();
 
-    output = output - Bias;
+    // output = output - Bias;
+
+    input = input - offset;
+
+    input = map(input, 0, 360, -255, 255);
+
+    if (input < 80 && input > -80)
+    {
+        output = input * -0.2;
+    }
+    else
+    {
+        output = input * -0.1;
+    }
+
+    // output *= -1;
 
     return output;
 }
@@ -175,5 +196,42 @@ void Compass::PIDvalue(int _p, int _i, int _d)
     p = _p;
     i = _i;
     d = _d;
+}
+
+void Compass::test()
+{
+  
+Adafruit_BNO055 bno = Adafruit_BNO055(55);
+  Serial.println("Orientation Sensor Test"); Serial.println("");
+  
+  /* Initialise the sensor */
+  if(!bno.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    while(1);
+  }
+  
+  delay(1000);
     
+  bno.setExtCrystalUse(true);
+
+
+while(true) 
+{
+  /* Get a new sensor event */ 
+  sensors_event_t event; 
+  bno.getEvent(&event);
+  
+  /* Display the floating point data */
+  Serial.print("X: ");
+  Serial.print(event.orientation.x, 4);
+  Serial.print("\tY: ");
+  Serial.print(event.orientation.y, 4);
+  Serial.print("\tZ: ");
+  Serial.print(event.orientation.z, 4);
+  Serial.println("");
+  
+  delay(100);
+}
 }
