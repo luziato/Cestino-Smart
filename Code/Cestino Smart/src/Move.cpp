@@ -467,11 +467,23 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
 
     int _correct = compass.Correct();
 
+    int oldDir;
+
     /*if (dir != 0)
     {
         // sprintf((char *)buflog, "%d,%d\n", dir, _dir);
         // UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
     }*/
+
+    if (_dir != 0)
+    {
+        oldDir = _dir;
+    } else if (_dir == 0)
+    {
+        _dir = oldDir;
+    }
+    
+    
 
     //debM("Dir:");
     //debM(dir);
