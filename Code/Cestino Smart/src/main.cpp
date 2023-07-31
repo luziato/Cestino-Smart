@@ -9,25 +9,28 @@
 #include "Move.h"
 #include "_UDP.h"
 #include "Compass.h"
+#include "SimpleKalmanFilter.h"
 
 Move MoveTo;
 
 Compass compass;
 
+SimpleKalmanFilter simpleKalmanFilter(2, 2, 0.01);
+
 int UDPdir;
 int UDPspeed;
 int UDPtime;
+
+int bat = 0;
 
 void setup()
 {
     delay(2000);
     Serial.begin(9600);
     
-    //waitForSerial;        //ON/OFF SERIAL
+    //waitForSerial;        //ON/OFF SERIAL CHECK
     
     Serial.println("ciao");
-
-    //MoveTo.test();
 
     UDPsetup();
 
@@ -38,7 +41,6 @@ void setup()
 
     debln("setup completed");
 
-    // debln("TESTING...");
 }
 
 void loop()
@@ -52,6 +54,20 @@ void loop()
     //UDPdir = 0;
     UDPspeed = 0;
     UDPtime = 0;
+
+    
+    bat = simpleKalmanFilter.updateEstimate(analogRead(A6));
+
+    if (bat < 310)
+    {
+        //send low battery allert mesage
+        /*
+        tone(12, 1000, 500);
+        delay(1000);
+        tone(12, 1000, 500);
+        */
+    }
+    
 
     // delay(1);
 }

@@ -9,7 +9,6 @@ extern Compass compass;
 
 int trigger = A0;
 
-
 Move::Move()
 {
     _mot1.begin(NORTH_DIR1, NORTH_DIR2, NORTH_ENABLE);
@@ -22,18 +21,25 @@ Move::~Move() {}
 
 void Move::test()
 {
-    for (int i = 0; i < 1024; i++)
-    {
-        _mot2.moving(2, i, 0);
-        delay(300);
-        deblnM1(i);
-    }
 
-    while (true)
-    {
-        deblnM1("Ended...");
-        delay(1000);
-    }
+    digitalWrite(NORTH_ENABLE, HIGH); //  Setting speed
+
+    analogWrite(NORTH_DIR1, 255); //  Setting direction
+    analogWrite(NORTH_DIR2, 0);
+    delay(2000);
+    analogWrite(NORTH_DIR1, 100); //  Setting direction
+    analogWrite(NORTH_DIR2, 0);
+    delay(2000);
+
+    analogWrite(NORTH_DIR1, 0); //  Setting direction
+    analogWrite(NORTH_DIR2, 100);
+    delay(2000);
+    analogWrite(NORTH_DIR1, 0); //  Setting direction
+    analogWrite(NORTH_DIR2, 255);
+    delay(2000);
+
+
+
 
     /*_mot1.moving(1, 255, 0);
     delay(2000);
@@ -478,15 +484,14 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
     if (_dir != 0)
     {
         oldDir = _dir;
-    } else if (_dir == 0)
+    }
+    else if (_dir == 0)
     {
         _dir = oldDir;
     }
-    
-    
 
-    //debM("Dir:");
-    //debM(dir);
+    // debM("Dir:");
+    // debM(dir);
     debM("S:");
     debM(speed / 2);
     // debM(",T:");
@@ -1025,7 +1030,7 @@ void Move::Tare(unsigned int duration)
 {
     // uint8_t buflog[50];
 
-    Dir3(361, 200, duration + 100, micros());       // rotate CW(361)
+    Dir3(361, 200, duration + 100, micros()); // rotate CW(361)
     delay(100);
     Dir3(361, 90, duration + 100, micros());
     compass._tare(duration);
@@ -1040,11 +1045,11 @@ void Move::Angle_Correction3()
     {
         if (correct > 0)
         {
-            Dir3(361, 160 + (abs(correct)/2), 3 * 1000, micros()); // CW
+            Dir3(361, 160 + (abs(correct) / 2), 3 * 1000, micros()); // CW
         }
         else
         {
-            Dir3(362, 160 + (abs(correct)/2), 3 * 1000, micros()); // CCW
+            Dir3(362, 160 + (abs(correct) / 2), 3 * 1000, micros()); // CCW
         }
     }
 }

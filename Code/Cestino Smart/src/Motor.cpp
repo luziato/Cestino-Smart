@@ -42,7 +42,7 @@ void Motor::moving(int dir, int pwm, int correction)
     {
     case 0:
         /* FREEWHEEL */
-        analogWrite(_enable, LOW); //  Low ENABLE state means motor free running
+        digitalWrite(_enable, LOW); //  Low ENABLE state means motor free running
         break;
 
     case 1:
@@ -66,10 +66,10 @@ void Motor::moving(int dir, int pwm, int correction)
             pwmCorrect = 0;
         }*/
 
-        analogWrite(_enable, pwmCorrect); //  Setting speed
+        digitalWrite(_enable, HIGH); //  Setting speed
 
-        digitalWrite(_dir1, HIGH); //  Setting direction
-        digitalWrite(_dir2, LOW);
+        analogWrite(_dir1, pwmCorrect); //  Setting direction
+        analogWrite(_dir2, 0);
         break;
 
     case 2:
@@ -95,18 +95,18 @@ void Motor::moving(int dir, int pwm, int correction)
             pwmCorrect = 0;
         }*/
 
-        analogWrite(_enable, pwmCorrect); //  Setting speed
+        digitalWrite(_enable, HIGH); //  Setting speed
 
-        digitalWrite(_dir1, LOW); //  Setting direction
-        digitalWrite(_dir2, HIGH);
+        analogWrite(_dir1, 0); //  Setting direction
+        analogWrite(_dir2, pwmCorrect);
         break;
 
     case 3:
         /* HARD BREAK */
-        analogWrite(_enable, pwm); //  Setting breaking speed
+        digitalWrite(_enable, HIGH); //  Setting breaking speed
 
-        digitalWrite(_dir1, HIGH); //  Setting break
-        digitalWrite(_dir2, HIGH);
+        analogWrite(_dir1, pwm); //  Setting break
+        analogWrite(_dir2, pwm);
         break;
 
     default:
