@@ -105,7 +105,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
     // debM(",T:");
     // debM(time);
     debM(",Ang:");
-    // debM(compass.GetAllAngleRAW(true, 1));
+    // debM(compass.GetAngle());
     debM(",Corr:");
     debM(_correct);
     // debM(" micros: ");
@@ -468,6 +468,7 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
 {
     // uint8_t buflog[30];
+    debM("_");
 
     _dir = dir;
 
@@ -480,6 +481,8 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         // sprintf((char *)buflog, "%d,%d\n", dir, _dir);
         // UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
     }*/
+
+    debM("pippo_");
 
     if (_dir != 0)
     {
@@ -497,7 +500,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
     // debM(",T:");
     // debM(time);
     debM(",Ang:");
-    debM(compass.GetAllAngleRAW(true, 1));
+    debM(compass.GetAngle());
     debM(",Corr:");
     debM(_correct);
     // debM(" micros: ");
@@ -621,7 +624,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         }
         break;
 
-    case 360: //_Brake
+    case 363: //_Brake
 
         _mot1.moving(3, 255, 0);
         _mot2.moving(3, 255, 0);
@@ -632,7 +635,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         _mot3.moving(0, 0, 0);
         break;
 
-    case Freewheel:
+    case 364:   //free wheel
         if (!_time.Running)
         {
             deblnM1("stop mot");
@@ -687,7 +690,7 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
     // debM(",T:");
     // debM(time);
     debM(",Ang:");
-    debM(compass.GetAllAngleRAW(true, 1));
+    debM(compass.GetAngle());
     debM(",Corr:");
     debM(_correct);
     // debM(" micros: ");
@@ -1029,12 +1032,13 @@ void Move::Dir4(int dir, int speed, unsigned long time, unsigned long now)
 void Move::Tare(unsigned int duration)
 {
     // uint8_t buflog[50];
-
+    debln("start tare");
     Dir3(361, 200, duration + 100, micros()); // rotate CW(361)
     delay(100);
     Dir3(361, 90, duration + 100, micros());
+    debln("started movment");
     compass._tare(duration);
-    Dir(_Brake, 255, 0, micros());
+    Dir3(_Brake, 255, 0, micros());
 }
 
 void Move::Angle_Correction3()

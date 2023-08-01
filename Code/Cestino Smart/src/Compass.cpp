@@ -8,6 +8,8 @@
 
 ArduPID Controller;
 
+Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x28, &Wire);
+
 // Arbitrary setpoint and gains - adjust these as fit for your project:
 double setpoint = 180;
 double p = 0.375;
@@ -19,7 +21,16 @@ Compass::~Compass() {}
 
 void Compass::Begin()
 {
-    JY901.StartIIC();
+
+    if (!bno.begin())
+    {
+        /* There was a problem detecting the BNO055 ... check your connections */
+        Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+        while (1)
+            ;
+    }
+
+    bno.setExtCrystalUse(true);
 
     Controller.begin(&input, &output, &setpoint, p, i, d);
     Controller.setOutputLimits(0, 512);
@@ -34,13 +45,10 @@ void Compass::setNord()
 
     for (int i = 0; i < 32; i++)
     {
-        JY901.GetMag();
-
-        _data += (int)10000 + JY901.stcMag.h[0];
-        delay(6);
+        _data += GetAngle();
+        delay(12);
     }
-    _data = _data / 32;
-    Vnord = map(_data, value.min, value.max, 0, 359);
+    Vnord = _data / 32;
 
     debU("Vnord= ");
     deblnU(Vnord);
@@ -66,7 +74,7 @@ void Compass::_tare(unsigned int _duration)
 
     while (millis() - _startTime < _duration)
     {
-        int _sensorValue = GetAllAngleRAW(false, 1);
+        int _sensorValue = GetAngle();
 
         value.max = max(_sensorValue, value.max);
         value.min = min(_sensorValue, value.min);
@@ -98,43 +106,12 @@ int Compass::GetNord(void)
 void Compass::setAngle(int _angle)
 {
     offset = Vnord + _angle;
-
 }
 
 int Compass::GetAngle()
 {
-    JY901.GetMag();
-
-    int _val = JY901.stcMag.h[1];
-    // Roll[0] / 32768.0f * 180.0f;
-
-    return map(_val, value.min, value.max, 1, 360);
-}
-
-int Compass::GetAngleRAW(void)
-{
-    JY901.GetMag();
-    int _val = JY901.stcMag.h[0]; // + 10000;
-
-    return _val;
-}
-
-int Compass::GetAllAngleRAW(bool _prop, int _axis)
-{
-    if (_prop)
-    {
-        JY901.GetMag();
-
-        short _data = map(JY901.stcMag.h[_axis], value.min, value.max, 1, 360);
-        return _data;
-    }
-    else
-    {
-        JY901.GetMag();
-
-        int _data = JY901.stcMag.h[_axis];
-        return _data;
-    }
+    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    return euler.x();
 }
 
 double Compass::mapF(long x, long in_min, long in_max, long out_min, long out_max)
@@ -146,7 +123,7 @@ double Compass::mapF(long x, long in_min, long in_max, long out_min, long out_ma
 {
     int _dir = 0;
 
-    input = GetAllAngleRAW(true, 1); // Replace with sensor feedback
+    input = GetAngle(); // Replace with sensor feedback
 
     Controller.compute();
 
@@ -167,13 +144,13 @@ double Compass::mapF(long x, long in_min, long in_max, long out_min, long out_ma
 int Compass::Correct()
 {
 
-    input = GetAllAngleRAW(true, 1); // Replace with sensor feedback
+    input = GetAngle(); // Replace with sensor feedback
 
     // Controller.compute();
 
     // output = output - Bias;
 
-    //input = input - offset;
+    // input = input - offset;
 
     input = map(input, 0, 360, -255, 255);
 
@@ -200,38 +177,53 @@ void Compass::PIDvalue(int _p, int _i, int _d)
 
 void Compass::test()
 {
-  
-Adafruit_BNO055 bno = Adafruit_BNO055(55);
-  Serial.println("Orientation Sensor Test"); Serial.println("");
-  
-  /* Initialise the sensor */
-  if(!bno.begin())
-  {
-    /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    while(1);
-  }
-  
-  delay(1000);
-    
-  bno.setExtCrystalUse(true);
+    while (true)
+    {
 
+        // Possible vector values can be:
+        // - VECTOR_ACCELEROMETER - m/s^2
+        // - VECTOR_MAGNETOMETER  - uT
+        // - VECTOR_GYROSCOPE     - rad/s
+        // - VECTOR_EULER         - degrees
+        // - VECTOR_LINEARACCEL   - m/s^2
+        // - VECTOR_GRAVITY       - m/s^2
+        imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-while(true) 
-{
-  /* Get a new sensor event */ 
-  sensors_event_t event; 
-  bno.getEvent(&event);
-  
-  /* Display the floating point data */
-  Serial.print("X: ");
-  Serial.print(event.orientation.x, 4);
-  Serial.print("\tY: ");
-  Serial.print(event.orientation.y, 4);
-  Serial.print("\tZ: ");
-  Serial.print(event.orientation.z, 4);
-  Serial.println("");
-  
-  delay(100);
-}
+        /* Display the floating point data */
+        Serial.print("X: ");
+        Serial.print(euler.x());
+        Serial.print(" Y: ");
+        Serial.print(euler.y());
+        Serial.print(" Z: ");
+        Serial.print(euler.z());
+        Serial.print("\t\t");
+
+        /*
+        // Quaternion data
+        imu::Quaternion quat = bno.getQuat();
+        Serial.print("qW: ");
+        Serial.print(quat.w(), 4);
+        Serial.print(" qX: ");
+        Serial.print(quat.x(), 4);
+        Serial.print(" qY: ");
+        Serial.print(quat.y(), 4);
+        Serial.print(" qZ: ");
+        Serial.print(quat.z(), 4);
+        Serial.print("\t\t");
+        */
+
+        /* Display calibration status for each sensor. */
+        uint8_t system, gyro, accel, mag = 0;
+        bno.getCalibration(&system, &gyro, &accel, &mag);
+        Serial.print("CALIBRATION: Sys=");
+        Serial.print(system, DEC);
+        Serial.print(" Gyro=");
+        Serial.print(gyro, DEC);
+        Serial.print(" Accel=");
+        Serial.print(accel, DEC);
+        Serial.print(" Mag=");
+        Serial.println(mag, DEC);
+
+        delay(100);
+    }
 }

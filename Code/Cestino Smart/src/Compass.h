@@ -4,11 +4,10 @@
 // #include "Arduino.h"
 
 #include <JY901.h>
-#include <Adafruit_Sensor.h>
 #include "ArduPID.h"
 
 #include <Wire.h>
-//#include <Adafruit_Sensor.h>
+#include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 
@@ -42,8 +41,6 @@ public:
     void setNord();
     void setForcedNord();
     int GetAngle();
-    int GetAngleRAW(void);
-    int GetAllAngleRAW(bool _prop, int _axis);
     int Correct();
     void PIDvalue(int _p, int _i, int _d);
     void setAngle(int _angle);

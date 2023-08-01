@@ -34,10 +34,14 @@ void setup()
 
     UDPsetup();
 
+    debln("udp-setup done");
+
     // Bussola
     compass.Begin();
 
-    MoveTo.Tare(4000);
+    debln("bussola-setup done");
+
+    MoveTo.Tare(40);
 
     debln("setup completed");
 
