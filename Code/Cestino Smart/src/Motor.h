@@ -27,6 +27,8 @@ public:
      * @param pwm From 0 to 255
     */
     void moving(int dir, int pwm, int correction);
+
+    void suspend(bool _en);
 };
 
 #endif

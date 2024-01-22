@@ -4,10 +4,15 @@
 #include "WiFiNINA.h"    // Wifi library
 #include "WiFiUdp.h"     // UDP library
 #include "credentials.h" // The log-in credential for wifi connection
+#include "Compass.h"     // compass lib
 
 /*********DEBUGGER************/
 #include "debug.h"
 /*****************************/
+
+extern Compass compass;
+
+extern bool mot_KILL;
 
 ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
 char ssid[] = SECRET_SSID; // your network SSID (name)
@@ -17,7 +22,9 @@ int status = WL_IDLE_STATUS; // Status of WiFi connection
 
 WiFiSSLClient client; // Instantiate the Wifi client
 
-
+extern double PID_p;
+extern double PID_i; // 1
+extern double PID_d; // 3
 
 // UDP Variables
 unsigned int localPort = 30000;          // local port to listen on
@@ -99,10 +106,11 @@ void UDPfunc(int *_dir, int *_speed, int *_time)
 
     // read the packet into packetBufffer
     // int len = Udp.read(udpRXBuffer, 255);
+    analogWrite(A0,255);
     Udp.read(udpRXBuffer, 255);
     UDP_getData(udpRXBuffer);
+    analogWrite(A0,0);
 
-    UDP_getData(udpRXBuffer);
     parseData(udpRXBuffer, _dir, _speed, _time);
 
     // printData(true);
@@ -155,6 +163,53 @@ void parseData(unsigned char *rxbf, int *_dir, int *_speed, int *_time)
   case UDP_POOLING:
     udpReconnectionTimer = millis();
     // deblnU("UDP_POOLING");
+    break;
+
+  case UDP_PIDPARAM:
+
+    strtokIndx = strtok((char *)UDP_getData(rxbf), ";"); // get the first part - the string
+    float p;
+    p = atof(strtokIndx); // convert this part to an integer
+
+    // Converts speed
+    strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+    float i;
+    i = atof(strtokIndx); // convert this part to an integer
+
+    // Converts time
+    strtokIndx = strtok(NULL, ";"); // this continues where the previous call left off
+    float d;
+    d = atof(strtokIndx); // convert this part to an integer
+
+    compass.PIDvalue(p, i, d);
+
+    debP("PID value: ");
+    debP(PID_p);
+    debP(";");
+    debP(PID_i);
+    debP(";");
+    debP(PID_d);
+    deblnP();
+
+    break;
+
+  case UPD_NORDOFFS:
+
+    strtokIndx = strtok((char *)UDP_getData(rxbf), ";"); // get the first part - the string
+    int fase;
+    fase = atoi(strtokIndx); // convert this part to an integer
+
+    if (fase == 1)
+    {
+      mot_KILL = true;
+    }
+    else
+    {
+      mot_KILL = false;
+    }
+
+    compass.setNord(fase);
+
     break;
   }
 }
@@ -217,7 +272,7 @@ void connectToAP()
 void printWiFiData()
 {
   // print your board's IP address:
-  IPAddress ip = WiFi.localIP();
+  //IPAddress ip = WiFi.localIP();
   debU("IP address : ");
   deblnU(ip);
 

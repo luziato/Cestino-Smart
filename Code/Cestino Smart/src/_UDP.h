@@ -3,6 +3,8 @@
 #include "credentials.h" // The log-in credential for wifi connection
  */
 
+
+
 #ifndef _UDP_h
 #define _UDP_h
 
@@ -12,7 +14,12 @@
 #define UDP_LOGIN   2
 #define UDP_POOLING 3
 #define UDP_LOGOUT  4
-#define UDP_NULL    5
+#define UDP_PIDPARAM 5
+#define UPD_NORDOFFS 6
+#define UDP_LIST    7
+#define UDP_NULL    8
+
+
 #define UDP_HEADE_LEN 16
 
 //int dir, speed, time;

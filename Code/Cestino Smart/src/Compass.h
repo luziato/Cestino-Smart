@@ -32,17 +32,17 @@ public:
     Compass();
     ~Compass();
 
-    int Vnord = 180;
-    int offset = 180;
+    int Vnord;
+    int offset;
 
     void Begin();
     int GetNord(void);
     void _tare(unsigned int _duration);
-    void setNord();
+    void setNord(int _fase);
     void setForcedNord();
     int GetAngle();
     int Correct();
-    void PIDvalue(int _p, int _i, int _d);
+    void PIDvalue(float _p, float _i, float _d);
     void setAngle(int _angle);
     void test();
 };

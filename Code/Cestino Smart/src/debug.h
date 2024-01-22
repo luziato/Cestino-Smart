@@ -3,9 +3,10 @@
 
 
 /*****************_SET_*****************/
-    #define DEBUG 1
+    #define DEBUG 0
         #define DEBUG_COMPASS 0
         #define DEBUG_UDP 0
+        #define DEBUG_PID 0
         #define DEBUG_MOVE 1
             #define DEBUG_MOVE1 1
             #define DEBUG_MOVEA 0
@@ -36,6 +37,15 @@
         #else
          #define debU(x)
          #define deblnU(x)
+        #endif
+
+        // Debugger for PID
+        #if DEBUG_PID == 1
+         #define debP(x) Serial.print(x)
+         #define deblnP(x) Serial.println(x)
+        #else
+         #define debP(x)
+         #define deblnP(x)
         #endif
 
         // Debugger for MOVE
@@ -79,6 +89,8 @@
      #define deblnM(x)
      #define debM1(x)
      #define deblnM1(x)
+     #define debP(x)
+     #define deblnP(x)
 
     #endif
 

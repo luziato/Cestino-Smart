@@ -11,10 +11,10 @@ ArduPID Controller;
 Adafruit_BNO055 bno = Adafruit_BNO055(-1, 0x28, &Wire);
 
 // Arbitrary setpoint and gains - adjust these as fit for your project:
-double setpoint = 180;
-double p = 0.375;
-double i = 0.2; // 1
-double d = 10;  // 3
+double setpoint = 150;
+double PID_p = 0.2; // 375;
+double PID_i = 0.2; // 1
+double PID_d = 10;  // 3
 
 Compass::Compass() {}
 Compass::~Compass() {}
@@ -32,32 +32,31 @@ void Compass::Begin()
 
     bno.setExtCrystalUse(true);
 
-    Controller.begin(&input, &output, &setpoint, p, i, d);
+    Controller.begin(&input, &output, &setpoint, PID_p, PID_i, PID_d);
     Controller.setOutputLimits(0, 512);
     Controller.setWindUpLimits(-10, 10); // Groth bounds for the integral term to prevent integral wind-up
     Controller.setBias(Bias);
     Controller.start();
 }
 
-void Compass::setNord()
+void Compass::setNord(int _fase)
 {
-    int _data = 0;
-
-    for (int i = 0; i < 32; i++)
+    if (_fase == 0)
     {
-        _data += GetAngle();
-        delay(12);
+        int _data = 0;
+
+        for (int i = 0; i < 15; i++)
+        {
+            _data += GetAngle();
+            delay(12);
+        }
+        Vnord = _data / 15;
+        setpoint = Vnord
+
+        debU("Vnord= ");
+        deblnU(Vnord);
     }
-    Vnord = _data / 32;
-
-    debU("Vnord= ");
-    deblnU(Vnord);
-    debU("Min= ");
-    deblnU(value.min);
-    debU("Max= ");
-    deblnU(value.max);
-
-    // UDPlogI("Vnord", Vnord);
+    
 }
 
 void Compass::setForcedNord()
@@ -146,33 +145,38 @@ int Compass::Correct()
 
     input = GetAngle(); // Replace with sensor feedback
 
-    // Controller.compute();
+    
 
-    // output = output - Bias;
+    //input = input - Vnord;
 
-    // input = input - offset;
+    Controller.compute();
 
-    input = map(input, 0, 360, -255, 255);
+    output = output - Bias;
 
-    if (input < 80 && input > -80)
+
+    // input = map(input, 0, 360, -255, 255);
+
+    /*if (input < 80 && input > -80)
     {
         output = input * -0.3;
     }
     else
     {
         output = input * -0.1;
-    }
+    }*/
 
-    // output *= -1;
+    output *= -1;
 
     return output;
 }
 
-void Compass::PIDvalue(int _p, int _i, int _d)
+void Compass::PIDvalue(float _p, float _i, float _d)
 {
-    p = _p;
-    i = _i;
-    d = _d;
+
+    Controller.setCoefficients(_p, _i, _d);
+    PID_p = _p;
+    PID_i = _i;
+    PID_d = _d;
 }
 
 void Compass::test()

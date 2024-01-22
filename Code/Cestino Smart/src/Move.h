@@ -19,9 +19,9 @@ private:
 
     typedef struct
     {
-        int mot1 = 270;
-        int mot2 = 30;
-        int mot3 = 150;
+        int mot1 = 90;
+        int mot2 = 210;
+        int mot3 = 330;
 
     } _3MotAng;
 
@@ -153,7 +153,7 @@ public:
      */
     void Dir4(int dir, int speed, unsigned long time, unsigned long now);
 
-    void KILL();
+    void KILL(bool _en);
     void Brake();
     void Tare(unsigned int duration);
     void Angle_Correction3();

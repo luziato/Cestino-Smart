@@ -21,6 +21,8 @@ int UDPdir;
 int UDPspeed;
 int UDPtime;
 
+bool mot_KILL = false;
+
 int bat = 0;
 
 void setup()
@@ -53,14 +55,20 @@ void loop()
 
     // deb("D: ");deb(UDPdir);deb(" S: ");deb(UDPspeed);deb(" T: ");deb(UDPtime);debln(" .");
 
+    if (!mot_KILL)
+    {
+    
     MoveTo.Dir3(UDPdir, UDPspeed, UDPtime * 1000, micros());
+    
+    }
 
     //UDPdir = 0;
     UDPspeed = 0;
     UDPtime = 0;
 
     
-    bat = simpleKalmanFilter.updateEstimate(analogRead(A6));
+    //bat = simpleKalmanFilter.updateEstimate(analogRead(A6));
+    
 
     if (bat < 310)
     {
@@ -73,5 +81,5 @@ void loop()
     }
     
 
-    // delay(1);
+     //delay(10);
 }

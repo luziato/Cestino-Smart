@@ -1,5 +1,4 @@
 #include "Move.h"
-#include "_UDP.h"
 
 /*********DEBUGGER************/
 #include "debug.h"
@@ -38,9 +37,6 @@ void Move::test()
     analogWrite(NORTH_DIR2, 255);
     delay(2000);
 
-
-
-
     /*_mot1.moving(1, 255, 0);
     delay(2000);
     KILL();
@@ -61,12 +57,13 @@ void Move::test()
     KILL();*/
 }
 
-void Move::KILL()
+void Move::KILL(bool _suspend)
 {
-    _mot1.moving(0, 0, 0);
-    _mot2.moving(0, 0, 0);
-    _mot3.moving(0, 0, 0);
-    _mot4.moving(0, 0, 0);
+        _mot1.suspend(_suspend);
+        _mot2.suspend(_suspend);
+        _mot2.suspend(_suspend);
+        _mot3.suspend(_suspend);
+        _mot4.suspend(_suspend);   
 }
 
 void Move::Brake()
@@ -467,9 +464,6 @@ void Move::Dir(int dir, int speed, unsigned long time, unsigned long now)
 
 void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
 {
-    // uint8_t buflog[30];
-    debM("_");
-
     _dir = dir;
 
     int _correct = compass.Correct();
@@ -482,8 +476,6 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         // UDP_sendPaket(30000, UDP_MESSAGE, buflog, strlen((char *)buflog));
     }*/
 
-    debM("pippo_");
-
     if (_dir != 0)
     {
         oldDir = _dir;
@@ -495,17 +487,17 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
 
     // debM("Dir:");
     // debM(dir);
-    debM("S:");
-    debM(speed / 2);
+    // debM("S:");
+    // debM(speed / 2);
     // debM(",T:");
     // debM(time);
-    debM(",Ang:");
+    //debM("Ang:");
     debM(compass.GetAngle());
-    debM(",Corr:");
-    debM(_correct);
+    debM(",");
+    debM(compass.GetAngle() + _correct);
     // debM(" micros: ");
     // debM(now);
-    deblnM("");
+    deblnM();
 
     _time.time = time;
 
@@ -624,7 +616,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         }
         break;
 
-    case 363: //_Brake
+    case 364: //_Brake
 
         _mot1.moving(3, 255, 0);
         _mot2.moving(3, 255, 0);
@@ -635,7 +627,7 @@ void Move::Dir3(int dir, int speed, unsigned long time, unsigned long now)
         _mot3.moving(0, 0, 0);
         break;
 
-    case 364:   //free wheel
+    case 363: // free wheel
         if (!_time.Running)
         {
             deblnM1("stop mot");
@@ -1045,15 +1037,15 @@ void Move::Angle_Correction3()
 {
     int correct = compass.Correct();
 
-    if (abs(correct) > 10)
+    if (abs(correct) > 1)
     {
         if (correct > 0)
         {
-            Dir3(361, 160 + (abs(correct) / 2), 3 * 1000, micros()); // CW
+            Dir3(361, 110 + (abs(correct) / 2), 3 * 1000, micros()); // CW
         }
         else
         {
-            Dir3(362, 160 + (abs(correct) / 2), 3 * 1000, micros()); // CCW
+            Dir3(362, 110 + (abs(correct) / 2), 3 * 1000, micros()); // CCW
         }
     }
 }
