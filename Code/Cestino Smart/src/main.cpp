@@ -15,15 +15,11 @@ Move MoveTo;
 
 Compass compass;
 
-SimpleKalmanFilter simpleKalmanFilter(2, 2, 0.01);
-
 int UDPdir;
 int UDPspeed;
 int UDPtime;
 
 bool mot_KILL = false;
-
-int bat = 0;
 
 void setup()
 {
@@ -66,20 +62,7 @@ void loop()
     UDPspeed = 0;
     UDPtime = 0;
 
-    
-    //bat = simpleKalmanFilter.updateEstimate(analogRead(A6));
-    
 
-    if (bat < 310)
-    {
-        //send low battery allert mesage
-        /*
-        tone(12, 1000, 500);
-        delay(1000);
-        tone(12, 1000, 500);
-        */
-    }
-    
 
      //delay(10);
 }

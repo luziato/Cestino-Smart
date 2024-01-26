@@ -194,13 +194,13 @@ void Compass::test()
         imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
         /* Display the floating point data */
-        Serial.print("X: ");
-        Serial.print(euler.x());
-        Serial.print(" Y: ");
-        Serial.print(euler.y());
-        Serial.print(" Z: ");
-        Serial.print(euler.z());
-        Serial.print("\t\t");
+        //Serial.print("X: ");
+        //Serial.print(euler.x());
+        //Serial.print(" Y: ");
+        //Serial.print(euler.y());
+        //Serial.print(" Z: ");
+        //Serial.print(euler.z());
+        //Serial.print("\t\t");
 
         /*
         // Quaternion data
@@ -219,15 +219,46 @@ void Compass::test()
         /* Display calibration status for each sensor. */
         uint8_t system, gyro, accel, mag = 0;
         bno.getCalibration(&system, &gyro, &accel, &mag);
-        Serial.print("CALIBRATION: Sys=");
-        Serial.print(system, DEC);
-        Serial.print(" Gyro=");
-        Serial.print(gyro, DEC);
-        Serial.print(" Accel=");
-        Serial.print(accel, DEC);
-        Serial.print(" Mag=");
+        Serial.print(">Sys:");
+        Serial.println(system, DEC);
+        Serial.print(">Gyro:");
+        Serial.println(gyro, DEC);
+        Serial.print(">Accel:");
+        Serial.println(accel, DEC);
+        Serial.print(">Mag:");
         Serial.println(mag, DEC);
 
         delay(100);
     }
+}
+
+short Compass::IMUcalib()
+{
+  /* Get the four calibration values (0..3) */
+  /* Any sensor data reporting 0 should be ignored, */
+  /* 3 means 'fully calibrated" */
+  /* The data should be ignored until the system calibration is > 0 */
+  uint8_t _system, _gyro, _accel, _mag;
+  _system = _gyro = _accel = _mag = 0;
+  bno.getCalibration(&_system, &_gyro, &_accel, &_mag);
+
+  return _system;
+  
+  /*
+  Serial.print("\t");
+  if (!system)
+  {
+    Serial.print("! ");
+  }
+
+  // Display the individual values
+  Serial.print("Sys:");
+  Serial.print(system, DEC);
+  Serial.print(" G:");
+  Serial.print(gyro, DEC);
+  Serial.print(" A:");
+  Serial.print(accel, DEC);
+  Serial.print(" M:");
+  Serial.print(mag, DEC);
+  */
 }

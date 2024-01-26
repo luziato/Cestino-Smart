@@ -21,6 +21,7 @@ const unsigned char WEST_DIR1 = 11;      // WEST dir1 pin
 const unsigned char WEST_DIR2 = 12;     // WEST dir2 pin
 const unsigned char WEST_ENABLE = 13;   // WEST enable pin
 
-//int Vnord = 0;
+//Battery voltage reading
+#define battPin A6
 
 #endif

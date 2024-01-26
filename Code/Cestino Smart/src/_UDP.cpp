@@ -5,6 +5,7 @@
 #include "WiFiUdp.h"     // UDP library
 #include "credentials.h" // The log-in credential for wifi connection
 #include "Compass.h"     // compass lib
+#include "const.h"       // HW oin lib
 
 /*********DEBUGGER************/
 #include "debug.h"
@@ -37,6 +38,11 @@ unsigned char udpRXBuffer[255];
 
 unsigned long udpReconnectionTimer = 0;
 int reconnectingTimer = 4000;
+
+unsigned long udpBattStatus = 0;
+int BattTimer = 10000;   //30sec 
+
+short oldcalib = 0;   //old imu calibration status
 
 //********************************************
 
@@ -101,15 +107,15 @@ void UDPfunc(int *_dir, int *_speed, int *_time)
 
   reconnect(reconnectingTimer, false);
 
+  sendBattery(BattTimer, false);
+  sendIMUcalib(false);
+
   if (packetSize)
   {
-
     // read the packet into packetBufffer
     // int len = Udp.read(udpRXBuffer, 255);
-    analogWrite(A0,255);
     Udp.read(udpRXBuffer, 255);
     UDP_getData(udpRXBuffer);
-    analogWrite(A0,0);
 
     parseData(udpRXBuffer, _dir, _speed, _time);
 
@@ -314,4 +320,37 @@ void UDPlogI(char *leb, int log)
   uint8_t _log[50];
   sprintf((char *)_log, "%s: %d", leb, log);
   UDP_sendPaket(30000, UDP_MESSAGE, _log, strlen((char *)_log));
+}
+
+void sendBattery(int _period, bool _now)
+{
+if ((udpBattStatus + _period) < millis() || _now)
+  {
+    int batt = analogRead(battPin);  //reading battery pin
+
+    batt = 1000*(batt * (19.5 / 1023.0));   //convet to volts
+
+    UDPlogI("B", batt);    //sending batt voltage over UDP
+    
+    sendIMUcalib(true);
+        
+    udpBattStatus = millis();
+  }
+}
+
+void sendIMUcalib(bool _now)
+{
+  /* Get the four calibration values (0..3) */
+  /* Any sensor data reporting 0 should be ignored, */
+  /* 3 means 'fully calibrated" */
+  /* The data should be ignored until the system calibration is > 0 */
+  short _calib = compass.IMUcalib();
+
+  if (_calib != oldcalib || _now)
+  {
+    UDPlogI("I", _calib);
+  }
+
+  oldcalib = _calib;
+  
 }

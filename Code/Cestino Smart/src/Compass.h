@@ -45,6 +45,7 @@ public:
     void PIDvalue(float _p, float _i, float _d);
     void setAngle(int _angle);
     void test();
+    short IMUcalib();
 };
 
 #endif

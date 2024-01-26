@@ -22,8 +22,6 @@
 
 #define UDP_HEADE_LEN 16
 
-//int dir, speed, time;
-
 extern void connectToAP();
 extern void printWiFiData();
 extern void UDP_sendPaket(int sockport, uint8_t Identfier, uint8_t *pak, size_t msize);
@@ -39,4 +37,7 @@ extern void UDPfunc(int *_dir, int *_speed, int *_time);
 extern void reconnect(int period, bool immeidately);
 extern void UDPlogS(char* leb, char* log);
 extern void UDPlogI(char* leb, int log);
+extern void UDPlogF(char* leb, int log);
+void sendBattery(int _period, bool _now);
+void sendIMUcalib(bool _now);
 
